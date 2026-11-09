@@ -47,10 +47,10 @@ class ProfitabilityReportScreen extends ConsumerWidget {
                       children: [
                         Expanded(
                           child: MetricCard(
-                            label: 'Revenue',
-                            value: MoneyFormatter.format(data.revenue),
-                            icon: Icons.trending_up,
-                            color: AppColors.success,
+                            label: 'Estimated cost',
+                            value: MoneyFormatter.format(data.estimatedProductionCost),
+                            icon: Icons.precision_manufacturing_outlined,
+                            color: AppColors.accent,
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -73,7 +73,9 @@ class ProfitabilityReportScreen extends ConsumerWidget {
                           ? AppColors.positive
                           : AppColors.negative,
                       isHighlighted: true,
-                      hint: 'Estimated cost ${MoneyFormatter.format(data.estimatedCost)}',
+                      hint: data.profitEstimated == null
+                          ? 'Estimated cost ${MoneyFormatter.format(data.estimatedCost)}'
+                          : 'Estimated profit ${MoneyFormatter.format(data.profitEstimated!)}',
                     ),
                     const SizedBox(height: 12),
                     for (final row in data.rows)
@@ -92,6 +94,10 @@ class ProfitabilityReportScreen extends ConsumerWidget {
                                 row.customerName,
                                 AppDate.format(row.deliveredAt),
                                 'cost ${MoneyFormatter.format(row.actualCost)}',
+                                if (row.productionCostSource != null)
+                                  'source ${row.productionCostSource}',
+                                if (row.estimatedProductionCost.cents > 0)
+                                  'est ${MoneyFormatter.format(row.estimatedProductionCost)}',
                               ].join(' · '),
                             ),
                             trailing: Column(
@@ -110,6 +116,15 @@ class ProfitabilityReportScreen extends ConsumerWidget {
                                 if (row.marginPercent != null)
                                   Text(
                                     '${row.marginPercent!.toStringAsFixed(1)}% margin',
+                                    style: const TextStyle(
+                                      fontSize: 11.5,
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  ),
+                                if (row.profitEstimated != null &&
+                                    row.marginPercentEstimated != null)
+                                  Text(
+                                    'est ${row.marginPercentEstimated!.toStringAsFixed(1)}%',
                                     style: const TextStyle(
                                       fontSize: 11.5,
                                       color: AppColors.textSecondary,

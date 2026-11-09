@@ -28,6 +28,8 @@ create table if not exists public.products (
   description text,
   base_price numeric(15,2) not null default 0 check (base_price >= 0),
   base_price_cents bigint generated always as (round(base_price * 100)::bigint) stored,
+  production_cost numeric(15,2) not null default 0 check (production_cost >= 0),
+  production_cost_cents bigint generated always as (round(production_cost * 100)::bigint) stored,
   unit text,
   image_path text,
   is_active boolean not null default true,

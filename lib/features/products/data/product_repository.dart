@@ -24,6 +24,8 @@ class ProductRepository extends SupabaseRepository {
     String? unit,
     String? imagePath,
     bool isActive = true,
+    Money productionCost = Money.zero,
+    String? note,
   }) async {
     final result = await callRpc(
       'rpc_save_product',
@@ -36,6 +38,8 @@ class ProductRepository extends SupabaseRepository {
         'p_unit': unit,
         'p_image_path': imagePath,
         'p_is_active': isActive,
+        'p_production_cost_cents': productionCost.cents,
+        'p_note': note,
       },
     );
     return Product.fromJson(result);

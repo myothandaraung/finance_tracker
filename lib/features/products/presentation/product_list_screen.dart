@@ -68,6 +68,8 @@ class ProductListScreen extends ConsumerWidget {
                     [
                       MoneyFormatter.format(product.basePrice),
                       if (product.unit != null) 'per ${product.unit}',
+                      'cost ${MoneyFormatter.format(product.productionCost)}',
+                      '${product.marginPercent.toStringAsFixed(0)}% margin',
                       if (!product.isActive) 'inactive',
                     ].join(' · '),
                   ),
@@ -115,6 +117,7 @@ class _ProductFormState extends ConsumerState<_ProductForm> {
   late final TextEditingController _descriptionController;
   late final TextEditingController _priceController;
   late final TextEditingController _unitController;
+  late final TextEditingController _costController;
 
   bool _isActive = true;
   bool _isSaving = false;
@@ -129,6 +132,9 @@ class _ProductFormState extends ConsumerState<_ProductForm> {
       text: widget.product?.basePrice.plain ?? '',
     );
     _unitController = TextEditingController(text: widget.product?.unit ?? '');
+    _costController = TextEditingController(
+      text: widget.product?.productionCost.plain ?? '',
+    );
     _isActive = widget.product?.isActive ?? true;
   }
 
@@ -138,6 +144,7 @@ class _ProductFormState extends ConsumerState<_ProductForm> {
     _descriptionController.dispose();
     _priceController.dispose();
     _unitController.dispose();
+    _costController.dispose();
     super.dispose();
   }
 
@@ -156,6 +163,8 @@ class _ProductFormState extends ConsumerState<_ProductForm> {
             basePrice: Money.tryParse(_priceController.text) ?? Money.zero,
             unit: _unitController.text.trim(),
             isActive: _isActive,
+            productionCost:
+                Money.tryParse(_costController.text) ?? Money.zero,
           );
       if (!mounted) return;
       showAppSnackBar(context, 'Product saved');
@@ -203,6 +212,12 @@ class _ProductFormState extends ConsumerState<_ProductForm> {
               AmountField(
                 label: 'Base price',
                 controller: _priceController,
+              ),
+              const SizedBox(height: 12),
+              AmountField(
+                label: 'Production cost / unit',
+                controller: _costController,
+                hint: 'Cost to produce one unit',
               ),
               const SizedBox(height: 12),
               AppTextField(

@@ -120,6 +120,9 @@ class OrderFinancials {
     required this.estimatedCost,
     required this.actualCost,
     required this.profit,
+    this.estimatedProductionCost = Money.zero,
+    this.productionCostSource,
+    this.profitEstimated,
   });
 
   final Money totalAmount;
@@ -130,6 +133,9 @@ class OrderFinancials {
   final Money estimatedCost;
   final Money actualCost;
   final Money profit;
+  final Money estimatedProductionCost;
+  final String? productionCostSource;
+  final Money? profitEstimated;
 
   bool get isFullyPaid => outstandingAmount <= Money.zero;
 
@@ -139,6 +145,7 @@ class OrderFinancials {
   }
 
   factory OrderFinancials.fromJson(Map<String, dynamic> json) {
+    final profitEstimated = json['profit_cents_estimated'] as int?;
     return OrderFinancials(
       totalAmount: Money(json['total_cents'] as int? ?? 0),
       netSales: Money(json['net_sales_cents'] as int? ?? 0),
@@ -148,6 +155,11 @@ class OrderFinancials {
       estimatedCost: Money(json['estimated_cost_cents'] as int? ?? 0),
       actualCost: Money(json['actual_cost_cents'] as int? ?? 0),
       profit: Money(json['profit_cents'] as int? ?? 0),
+      estimatedProductionCost:
+          Money(json['estimated_production_cost_cents'] as int? ?? 0),
+      productionCostSource: json['production_cost_source'] as String?,
+      profitEstimated:
+          profitEstimated == null ? null : Money(profitEstimated),
     );
   }
 }

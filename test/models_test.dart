@@ -3,6 +3,7 @@ import 'package:mto_finance/core/domain/order_status.dart';
 import 'package:mto_finance/core/domain/quotation_status.dart';
 import 'package:mto_finance/core/money/money.dart';
 import 'package:mto_finance/features/orders/domain/order.dart';
+import 'package:mto_finance/features/products/domain/product.dart';
 import 'package:mto_finance/features/quotations/domain/quotation.dart';
 
 void main() {
@@ -114,5 +115,19 @@ void main() {
     expect(OrderStatus.closed.allowedNext, isEmpty);
     expect(OrderStatus.completed.allowsItemEditing, isFalse);
     expect(OrderStatus.onHold.allowsItemEditing, isTrue);
+  });
+
+  test('reads the product production cost and computes the margin', () {
+    final product = Product.fromJson({
+      'id': 'p1',
+      'name': 'Custom Cake',
+      'base_price_cents': 450000,
+      'production_cost_cents': 210000,
+      'unit': 'cake',
+      'is_active': true,
+    });
+
+    expect(product.productionCost, Money(210000));
+    expect(product.marginPercent, closeTo(53.33, 0.01));
   });
 }

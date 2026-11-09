@@ -168,6 +168,19 @@ class OrderDetailScreen extends ConsumerWidget {
                         label: 'Estimated cost',
                         value: MoneyFormatter.format(financials.estimatedCost),
                       ),
+                      if (financials.productionCostSource != null)
+                        InfoRow(
+                          label: 'Production cost source',
+                          value: financials.productionCostSource == 'actual'
+                              ? 'Actual (cost entries)'
+                              : 'Estimated (product cost x qty)',
+                        ),
+                      if (financials.estimatedProductionCost.cents > 0 &&
+                          financials.productionCostSource != 'actual')
+                        InfoRow(
+                          label: 'Estimated production cost',
+                          value: MoneyFormatter.format(financials.estimatedProductionCost),
+                        ),
                       InfoRow(
                         label: 'Actual cost',
                         value: MoneyFormatter.format(financials.actualCost),
@@ -180,6 +193,14 @@ class OrderDetailScreen extends ConsumerWidget {
                             ? AppColors.positive
                             : AppColors.negative,
                       ),
+                      if (financials.profitEstimated != null)
+                        InfoRow(
+                          label: 'Profit (estimated)',
+                          value: MoneyFormatter.format(financials.profitEstimated!),
+                          valueColor: financials.profitEstimated!.cents >= 0
+                              ? AppColors.positive
+                              : AppColors.negative,
+                        ),
                       if (financials.netSales.cents > 0)
                         InfoRow(
                           label: 'Margin',

@@ -1,5 +1,4 @@
--- =============================================================================
--- 014_seed.sql
+create extension if not exists pgcrypto;
 -- Demo data for local development.
 --
 -- Creates two businesses, four users (all with the password demo1234),
@@ -42,7 +41,7 @@ begin
         'authenticated',
         'authenticated',
         v_user.email,
-        crypt('demo1234', gen_salt('bf')),
+        extensions.crypt('demo1234', extensions.gen_salt('bf')),
         now(),
         '{"provider":"email","providers":["email"]}',
         jsonb_build_object('display_name', v_user.name),
@@ -101,14 +100,14 @@ values
   ('d0000000-0000-4000-8000-000000000001', 'aaaaaaaa-0000-4000-8000-000000000002', 'Erik Johansson', '0920 555 0104', 'erik@example.com', '3 Nordic St, San Juan', null)
 on conflict (id) do nothing;
 
-insert into public.products (id, business_id, name, description, base_price, unit)
+insert into public.products (id, business_id, name, description, base_price, production_cost, unit)
 values
-  ('90000000-0000-4000-8000-000000000001', 'aaaaaaaa-0000-4000-8000-000000000001', 'Custom Cake (per size)', 'Three layer celebration cake, buttercream finish', 4500, 'cake'),
-  ('90000000-0000-4000-8000-000000000002', 'aaaaaaaa-0000-4000-8000-000000000001', 'Cupcakes (dozen)', 'Assorted flavours, fondant topper included', 1800, 'dozen'),
-  ('90000000-0000-4000-8000-000000000003', 'aaaaaaaa-0000-4000-8000-000000000001', 'Dessert Table (50 pax)', 'Five dessert varieties with styling', 22000, 'event'),
-  ('90000000-0000-4000-8000-000000000004', 'aaaaaaaa-0000-4000-8000-000000000001', 'Custom Cake (per size)', 'Wedding cake, three tiers', 8500, 'cake'),
-  ('90000000-0000-4000-8000-000000000005', 'aaaaaaaa-0000-4000-8000-000000000002', 'Oak Dining Table', 'Solid oak, 200 x 90 cm', 32000, 'table')
-on conflict (id) do nothing;
+  ('90000000-0000-4000-8000-000000000001', 'aaaaaaaa-0000-4000-8000-000000000001', 'Custom Cake (per size)', 'Three layer celebration cake, buttercream finish', 4500, 2100, 'cake'),
+  ('90000000-0000-4000-8000-000000000002', 'aaaaaaaa-0000-4000-8000-000000000001', 'Cupcakes (dozen)', 'Assorted flavours, fondant topper included', 1800, 780, 'dozen'),
+  ('90000000-0000-4000-8000-000000000003', 'aaaaaaaa-0000-4000-8000-000000000001', 'Dessert table (50 pax)', 'Five dessert varieties with styling', 22000, 10500, 'event'),
+  ('90000000-0000-4000-8000-000000000004', 'aaaaaaaa-0000-4000-8000-000000000001', 'Custom Cake (per size)', 'Wedding cake, three tiers', 8500, 3900, 'cake'),
+  ('90000000-0000-4000-8000-000000000005', 'aaaaaaaa-0000-4000-8000-000000000002', 'Oak Dining Table', 'Solid oak, 200 x 90 cm', 32000, 17500, 'table')
+on conflict (id) do update set production_cost = excluded.production_cost;
 
 insert into public.materials (id, business_id, name, unit, default_unit_cost)
 values

@@ -169,9 +169,10 @@ class _DashboardBody extends StatelessWidget {
                   Expanded(
                     child: MetricCard(
                       label: 'Production cost',
-                      value: MoneyFormatter.format(summary.productionCost),
+                      value: MoneyFormatter.format(summary.actualProductionCost),
                       icon: Icons.precision_manufacturing_outlined,
                       color: AppColors.accent,
+                      hint: 'Estimated ${MoneyFormatter.format(summary.estimatedProductionCost)}',
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -197,10 +198,27 @@ class _DashboardBody extends StatelessWidget {
                           ? AppColors.danger
                           : AppColors.positive,
                       isHighlighted: true,
-                      hint: 'Revenue minus production cost',
+                      hint: 'Revenue minus actual cost',
                     ),
                   ),
                   const SizedBox(width: 10),
+                  Expanded(
+                    child: MetricCard(
+                      label: 'Profit (est.)',
+                      value: MoneyFormatter.format(summary.profitEstimated),
+                      icon: Icons.savings_outlined,
+                      color: summary.profitEstimated.isNegative
+                          ? AppColors.danger
+                          : AppColors.positive,
+                      isHighlighted: true,
+                      hint: 'Revenue minus estimated cost',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
                   Expanded(
                     child: MetricCard(
                       label: 'Receivables',
@@ -210,11 +228,7 @@ class _DashboardBody extends StatelessWidget {
                       hint: 'Outstanding on all orders',
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
+                  const SizedBox(width: 8),
                   _StatusPill(
                     label: 'Open orders',
                     value: summary.ordersOpen,

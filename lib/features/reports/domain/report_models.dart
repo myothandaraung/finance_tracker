@@ -13,8 +13,11 @@ class DashboardSummary {
     required this.revenue,
     required this.expenses,
     required this.productionCost,
+    required this.actualProductionCost,
+    required this.estimatedProductionCost,
     required this.receivables,
     required this.profit,
+    required this.profitEstimated,
     required this.expensesByCategory,
   });
 
@@ -28,8 +31,11 @@ class DashboardSummary {
   final Money revenue;
   final Money expenses;
   final Money productionCost;
+  final Money actualProductionCost;
+  final Money estimatedProductionCost;
   final Money receivables;
   final Money profit;
+  final Money profitEstimated;
   final List<CategoryTotal> expensesByCategory;
 
   factory DashboardSummary.fromJson(Map<String, dynamic> json) {
@@ -44,8 +50,14 @@ class DashboardSummary {
       revenue: Money(json['revenue_cents'] as int? ?? 0),
       expenses: Money(json['expenses_cents'] as int? ?? 0),
       productionCost: Money(json['production_cost_cents'] as int? ?? 0),
+      actualProductionCost:
+          Money(json['actual_production_cost_cents'] as int? ?? 0),
+      estimatedProductionCost:
+          Money(json['estimated_production_cost_cents'] as int? ?? 0),
       receivables: Money(json['receivables_cents'] as int? ?? 0),
       profit: Money(json['profit_cents'] as int? ?? 0),
+      profitEstimated:
+          Money(json['profit_cents_estimated'] as int? ?? 0),
       expensesByCategory: ((json['expenses_by_category'] as List?) ?? const [])
           .whereType<Map>()
           .map(
@@ -177,6 +189,10 @@ class ProfitabilityRow {
     required this.actualCost,
     required this.profit,
     this.marginPercent,
+    this.estimatedProductionCost = Money.zero,
+    this.productionCostSource,
+    this.profitEstimated,
+    this.marginPercentEstimated,
   });
 
   final String orderId;
@@ -189,6 +205,10 @@ class ProfitabilityRow {
   final Money actualCost;
   final Money profit;
   final double? marginPercent;
+  final Money estimatedProductionCost;
+  final String? productionCostSource;
+  final Money? profitEstimated;
+  final double? marginPercentEstimated;
 
   factory ProfitabilityRow.fromJson(Map<String, dynamic> json) {
     return ProfitabilityRow(
@@ -202,6 +222,14 @@ class ProfitabilityRow {
       actualCost: Money(json['actual_cost_cents'] as int? ?? 0),
       profit: Money(json['profit_cents'] as int? ?? 0),
       marginPercent: (json['margin_pct'] as num?)?.toDouble(),
+      estimatedProductionCost:
+          Money(json['estimated_production_cost_cents'] as int? ?? 0),
+      productionCostSource: json['production_cost_source'] as String?,
+      profitEstimated: json['profit_cents_estimated'] == null
+          ? null
+          : Money((json['profit_cents_estimated'] as int?) ?? 0),
+      marginPercentEstimated:
+          (json['margin_pct_estimated'] as num?)?.toDouble(),
     );
   }
 }
@@ -216,6 +244,8 @@ class ProfitabilityReport {
     required this.actualCost,
     required this.profit,
     required this.rows,
+    this.estimatedProductionCost = Money.zero,
+    this.profitEstimated,
   });
 
   final DateTime from;
@@ -225,6 +255,8 @@ class ProfitabilityReport {
   final Money actualCost;
   final Money profit;
   final List<ProfitabilityRow> rows;
+  final Money estimatedProductionCost;
+  final Money? profitEstimated;
 
   factory ProfitabilityReport.fromJson(Map<String, dynamic> json) {
     final totals = Map<String, dynamic>.from(json['totals'] as Map? ?? const {});
@@ -239,6 +271,11 @@ class ProfitabilityReport {
           .whereType<Map>()
           .map((item) => ProfitabilityRow.fromJson(Map<String, dynamic>.from(item)))
           .toList(),
+      estimatedProductionCost:
+          Money(totals['estimated_production_cost_cents'] as int? ?? 0),
+      profitEstimated: totals['profit_cents_estimated'] == null
+          ? null
+          : Money((totals['profit_cents_estimated'] as int?) ?? 0),
     );
   }
 }
