@@ -33,6 +33,9 @@ run (the editor does not support `\i` includes):
 | 12 | `migrations/012_audit_triggers.sql` | audit safety net |
 | 13 | `migrations/013_storage.sql` | private `receipts` and `product-images` buckets |
 | 14 | `migrations/014_seed.sql` | demo data (optional) |
+| 15 | `migrations/015_product_production_cost.sql` | editable per-unit product production cost and cost history |
+| 16 | `migrations/016_order_cost_snapshot_profit.sql` | historical order-cost snapshot and corrected profit calculation |
+| 17 | `migrations/017_fix_order_cancellation.sql` | corrected refund balance check when cancelling orders |
 
 All files are idempotent where it matters (`create table if not exists`,
 `create or replace function`, `drop policy if exists` before `create policy`),
@@ -72,7 +75,12 @@ businesses: sign in as `owner2@demo.test` and you only see Nordic Woodworks.
 * Money is stored as `numeric(15,2)` and mirrored by a generated `*_cents`
   column. The API only ever exchanges **integer centavos**, so no float ever
   touches a financial figure.
-* Tax rate and discounts are percentages (`12` means 12%).
+* Discounts use percentages (`12` means 12%) or fixed integer-cent amounts.
+* Selecting a catalog product copies both its current selling price and its
+  current production cost into the order. These values become an order
+  snapshot; changing the product later does not change historical profit.
+* Order profit is net sales minus actual production-cost entries when they
+  exist, otherwise net sales minus the production cost saved with the order.
 * Revenue is recognised on delivery, cash is reported on the payment date.
   Both views are available in the reports and each screen states its basis.
 * Every write goes through a `SECURITY DEFINER` RPC. Row Level Security grants

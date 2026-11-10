@@ -20,7 +20,8 @@ class LineEditor extends StatelessWidget {
   final ValueChanged<List<LineInput>> onChanged;
 
   /// Products offered in the "add from catalog" menu.
-  final List<({String id, String name, Money price})> products;
+  final List<({String id, String name, Money price, Money productionCost})>
+  products;
 
   /// Orders and quotations both keep an estimated production cost per line.
   final bool allowEstimatedCost;
@@ -39,25 +40,39 @@ class LineEditor extends StatelessWidget {
   void _add() {
     onChanged([
       ...lines,
-      const LineInput(
-        description: '',
-        quantity: 1,
-        unitPrice: Money.zero,
-      ),
+      const LineInput(description: '', quantity: 1, unitPrice: Money.zero),
     ]);
   }
 
-  void _addFromProduct(String id, String name, Money price) {
-    onChanged([
-      ...lines,
-      LineInput(
-        productId: id,
-        description: name,
-        quantity: 1,
-        unitPrice: price,
-      ),
-    ]);
+  void _addFromProduct(
+    String id,
+    String name,
+    Money price,
+    Money productionCost,
+  ) {
+    final productLine = LineInput(
+      productId: id,
+      description: name,
+      quantity: 1,
+      unitPrice: price,
+      estimatedUnitCost: productionCost,
+    );
+
+    // A new document starts with one empty line. Selecting a catalog item
+    // should fill that line instead of leaving an unnecessary blank item.
+    if (lines.length == 1 && _isBlank(lines.single)) {
+      onChanged([productLine]);
+      return;
+    }
+
+    onChanged([...lines, productLine]);
   }
+
+  bool _isBlank(LineInput line) =>
+      line.productId == null &&
+      line.description.trim().isEmpty &&
+      line.unitPrice == Money.zero &&
+      line.estimatedUnitCost == Money.zero;
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +107,12 @@ class LineEditor extends StatelessWidget {
                     final product = products.firstWhere(
                       (item) => item.id == id,
                     );
-                    _addFromProduct(product.id, product.name, product.price);
+                    _addFromProduct(
+                      product.id,
+                      product.name,
+                      product.price,
+                      product.productionCost,
+                    );
                   },
                   itemBuilder: (context) => [
                     for (final product in products)
@@ -154,14 +174,16 @@ class _LineRowState extends State<_LineRow> {
   @override
   void initState() {
     super.initState();
-    _descriptionController =
-        TextEditingController(text: widget.line.description);
+    _descriptionController = TextEditingController(
+      text: widget.line.description,
+    );
     _quantityController = TextEditingController(
       text: _formatQuantity(widget.line.quantity),
     );
     _priceController = TextEditingController(text: widget.line.unitPrice.plain);
-    _costController =
-        TextEditingController(text: widget.line.estimatedUnitCost.plain);
+    _costController = TextEditingController(
+      text: widget.line.estimatedUnitCost.plain,
+    );
   }
 
   @override
@@ -171,6 +193,31 @@ class _LineRowState extends State<_LineRow> {
     _priceController.dispose();
     _costController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant _LineRow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Rows can be replaced after an order loads or a catalog item is chosen.
+    // Keep the controllers aligned with the model so fields and totals cannot
+    // display values from different lines.
+    if (oldWidget.line.description != widget.line.description &&
+        _descriptionController.text != widget.line.description) {
+      _descriptionController.text = widget.line.description;
+    }
+    if (oldWidget.line.quantity != widget.line.quantity &&
+        double.tryParse(_quantityController.text) != widget.line.quantity) {
+      _quantityController.text = _formatQuantity(widget.line.quantity);
+    }
+    if (oldWidget.line.unitPrice != widget.line.unitPrice &&
+        Money.tryParse(_priceController.text) != widget.line.unitPrice) {
+      _priceController.text = widget.line.unitPrice.plain;
+    }
+    if (oldWidget.line.estimatedUnitCost != widget.line.estimatedUnitCost &&
+        Money.tryParse(_costController.text) != widget.line.estimatedUnitCost) {
+      _costController.text = widget.line.estimatedUnitCost.plain;
+    }
   }
 
   String _formatQuantity(double value) {
@@ -227,8 +274,9 @@ class _LineRowState extends State<_LineRow> {
                   child: AppTextField(
                     label: 'Qty',
                     controller: _quantityController,
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     onChanged: (value) {
                       final parsed = double.tryParse(value);
                       if (parsed != null && parsed > 0) {
@@ -315,6 +363,11 @@ class TotalsPanel extends StatelessWidget {
                 value: MoneyFormatter.format(totals.estimatedCost),
                 muted: true,
               ),
+            _TotalRow(
+              label: 'Estimated profit',
+              value: MoneyFormatter.format(totals.estimatedProfit),
+              bold: true,
+            ),
           ],
         ),
       ),

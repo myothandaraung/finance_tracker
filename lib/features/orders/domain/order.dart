@@ -10,6 +10,7 @@ class OrderItem {
     required this.description,
     required this.quantity,
     required this.unitPrice,
+    required this.estimatedUnitCost,
     required this.lineTotal,
     this.position = 0,
   });
@@ -19,6 +20,7 @@ class OrderItem {
   final String description;
   final double quantity;
   final Money unitPrice;
+  final Money estimatedUnitCost;
   final Money lineTotal;
   final int position;
 
@@ -29,18 +31,20 @@ class OrderItem {
       description: (json['description'] as String?) ?? 'Item',
       quantity: ((json['quantity'] as num?) ?? 1).toDouble(),
       unitPrice: Money(json['unit_price_cents'] as int? ?? 0),
+      estimatedUnitCost: Money(json['estimated_cost_cents'] as int? ?? 0),
       lineTotal: Money(json['line_total_cents'] as int? ?? 0),
       position: (json['position'] as int?) ?? 0,
     );
   }
 
   Map<String, dynamic> toRpcPayload() => {
-        'product_id': productId,
-        'description': description,
-        'quantity': quantity,
-        'unit_price_cents': unitPrice.cents,
-        'position': position,
-      };
+    'product_id': productId,
+    'description': description,
+    'quantity': quantity,
+    'unit_price_cents': unitPrice.cents,
+    'estimated_cost_cents': estimatedUnitCost.cents,
+    'position': position,
+  };
 }
 
 /// A production cost entry (material, labour, overhead).
@@ -155,11 +159,11 @@ class OrderFinancials {
       estimatedCost: Money(json['estimated_cost_cents'] as int? ?? 0),
       actualCost: Money(json['actual_cost_cents'] as int? ?? 0),
       profit: Money(json['profit_cents'] as int? ?? 0),
-      estimatedProductionCost:
-          Money(json['estimated_production_cost_cents'] as int? ?? 0),
+      estimatedProductionCost: Money(
+        json['estimated_production_cost_cents'] as int? ?? 0,
+      ),
       productionCostSource: json['production_cost_source'] as String?,
-      profitEstimated:
-          profitEstimated == null ? null : Money(profitEstimated),
+      profitEstimated: profitEstimated == null ? null : Money(profitEstimated),
     );
   }
 }
@@ -293,7 +297,9 @@ class OrderDetail {
       financials: OrderFinancials.fromJson(financialsJson),
       payments: ((json['payments'] as List?) ?? const [])
           .whereType<Map>()
-          .map((item) => PaymentRecord.fromJson(Map<String, dynamic>.from(item)))
+          .map(
+            (item) => PaymentRecord.fromJson(Map<String, dynamic>.from(item)),
+          )
           .toList(),
       refunds: ((json['refunds'] as List?) ?? const [])
           .whereType<Map>()
@@ -305,7 +311,10 @@ class OrderDetail {
           .toList(),
       history: ((json['history'] as List?) ?? const [])
           .whereType<Map>()
-          .map((item) => OrderStatusEntry.fromJson(Map<String, dynamic>.from(item)))
+          .map(
+            (item) =>
+                OrderStatusEntry.fromJson(Map<String, dynamic>.from(item)),
+          )
           .toList(),
     );
   }

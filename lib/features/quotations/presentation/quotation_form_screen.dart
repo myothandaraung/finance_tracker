@@ -22,7 +22,8 @@ class QuotationFormScreen extends ConsumerStatefulWidget {
   final String? quotationId;
 
   @override
-  ConsumerState<QuotationFormScreen> createState() => _QuotationFormScreenState();
+  ConsumerState<QuotationFormScreen> createState() =>
+      _QuotationFormScreenState();
 }
 
 class _QuotationFormScreenState extends ConsumerState<QuotationFormScreen> {
@@ -59,7 +60,9 @@ class _QuotationFormScreenState extends ConsumerState<QuotationFormScreen> {
 
     setState(() => _loading = true);
     try {
-      final quotation = await ref.read(quotationDetailProvider(quotationId).future);
+      final quotation = await ref.read(
+        quotationDetailProvider(quotationId).future,
+      );
       if (!mounted) return;
 
       setState(() {
@@ -99,12 +102,12 @@ class _QuotationFormScreenState extends ConsumerState<QuotationFormScreen> {
   }
 
   DocumentTotals get _totals => DocumentTotals.calculate(
-        lines: _lines,
-        discountType: _discountType,
-        discountValue: _discountType == 'percent'
-            ? double.tryParse(_discountController.text) ?? 0
-            : (Money.tryParse(_discountController.text)?.cents ?? 0),
-      );
+    lines: _lines,
+    discountType: _discountType,
+    discountValue: _discountType == 'percent'
+        ? double.tryParse(_discountController.text) ?? 0
+        : (Money.tryParse(_discountController.text)?.cents ?? 0),
+  );
 
   Future<void> _save() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
@@ -122,7 +125,9 @@ class _QuotationFormScreenState extends ConsumerState<QuotationFormScreen> {
 
     setState(() => _isSaving = true);
     try {
-      await ref.read(quotationRepositoryProvider).saveQuotation(
+      await ref
+          .read(quotationRepositoryProvider)
+          .saveQuotation(
             businessId: businessId,
             quotationId: widget.quotationId,
             customerId: _customerId!,
@@ -163,14 +168,14 @@ class _QuotationFormScreenState extends ConsumerState<QuotationFormScreen> {
     final products = ref.watch(productsProvider).value ?? const [];
 
     if (_loading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.quotationId == null ? 'New quotation' : 'Edit quotation'),
+        title: Text(
+          widget.quotationId == null ? 'New quotation' : 'Edit quotation',
+        ),
       ),
       body: Form(
         key: _formKey,
@@ -189,8 +194,7 @@ class _QuotationFormScreenState extends ConsumerState<QuotationFormScreen> {
                   ),
               ],
               onChanged: (value) => setState(() => _customerId = value),
-              validator: (value) =>
-                  value == null ? 'Select a customer' : null,
+              validator: (value) => value == null ? 'Select a customer' : null,
             ),
             const SizedBox(height: 14),
             ListTile(
@@ -242,6 +246,7 @@ class _QuotationFormScreenState extends ConsumerState<QuotationFormScreen> {
                     id: product.id,
                     name: product.name,
                     price: product.basePrice,
+                    productionCost: product.productionCost,
                   ),
               ],
             ),
@@ -251,11 +256,15 @@ class _QuotationFormScreenState extends ConsumerState<QuotationFormScreen> {
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     initialValue: _discountType,
-                    decoration:
-                        const InputDecoration(labelText: 'Discount type'),
+                    decoration: const InputDecoration(
+                      labelText: 'Discount type',
+                    ),
                     items: const [
                       DropdownMenuItem(value: 'none', child: Text('None')),
-                      DropdownMenuItem(value: 'percent', child: Text('Percent')),
+                      DropdownMenuItem(
+                        value: 'percent',
+                        child: Text('Percent'),
+                      ),
                       DropdownMenuItem(value: 'amount', child: Text('Amount')),
                     ],
                     onChanged: (value) => setState(() {
@@ -271,8 +280,9 @@ class _QuotationFormScreenState extends ConsumerState<QuotationFormScreen> {
                         ? 'Discount (%)'
                         : 'Discount amount',
                     controller: _discountController,
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                   ),
                 ),
               ],

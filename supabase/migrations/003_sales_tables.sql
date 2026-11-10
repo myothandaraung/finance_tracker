@@ -94,6 +94,8 @@ create table if not exists public.order_items (
   quantity numeric(12,3) not null default 1 check (quantity > 0),
   unit_price numeric(15,2) not null default 0 check (unit_price >= 0),
   unit_price_cents bigint generated always as (round(unit_price * 100)::bigint) stored,
+  estimated_cost numeric(15,2) not null default 0 check (estimated_cost >= 0),
+  estimated_cost_cents bigint generated always as (round(estimated_cost * 100)::bigint) stored,
   line_total numeric(15,2) generated always as (round(quantity * unit_price, 2)) stored,
   line_total_cents bigint generated always as (round(quantity * unit_price * 100)::bigint) stored,
   position int not null default 0

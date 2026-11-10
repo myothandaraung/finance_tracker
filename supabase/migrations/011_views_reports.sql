@@ -33,23 +33,6 @@ as $$
     from public.refunds r
     where r.business_id = p_business_id
     group by r.order_id
-  ),
-  -- The production cost of an order: when cost entries exist we use the actual
-  -- cost, otherwise we fall back to the product production cost x quantity.
-  prod_cost as (
-    select
-      oi.order_id,
-      coalesce(
-        sum(round(oi.quantity * coalesce(pr.production_cost, 0), 2)),
-        0
-      )::bigint as product_cost_cents
-    from public.order_items oi
-    left join public.products pr on pr.id = oi.product_id
-    where exists (
-      select 1 from public.orders o
-      where o.id = oi.order_id and o.business_id = p_business_id
-    )
-    group by oi.order_id
   )
   select jsonb_build_object(
     'order_id', o.id,
@@ -69,17 +52,20 @@ as $$
     'actual_cost_cents', o.actual_cost_cents,
     'estimated_production_cost_cents',
       case when o.actual_cost_cents > 0 then o.actual_cost_cents
-           else coalesce(pc.product_cost_cents, 0)
+           else o.estimated_cost_cents
       end,
     'production_cost_source',
       case when o.actual_cost_cents > 0 then 'actual'
-           when pc.product_cost_cents is not null then 'estimated'
+           when o.estimated_cost_cents > 0 then 'order_snapshot'
            else 'none'
       end,
-    'profit_cents', o.net_sales_cents - o.actual_cost_cents,
+    'profit_cents',
+      o.net_sales_cents - case when o.actual_cost_cents > 0 then o.actual_cost_cents
+                               else o.estimated_cost_cents
+                          end,
     'profit_cents_estimated',
       o.net_sales_cents - case when o.actual_cost_cents > 0 then o.actual_cost_cents
-                              else coalesce(pc.product_cost_cents, 0)
+                              else o.estimated_cost_cents
                          end,
     'due_date', o.due_date,
     'delivered_at', o.delivered_at,
@@ -89,7 +75,6 @@ as $$
   join public.customers c on c.id = o.customer_id
   left join paid p on p.pay_order_id = o.id
   left join refunded r on r.ref_order_id = o.id
-  left join prod_cost pc on pc.order_id = o.id
   where o.business_id = p_business_id;
 $$;
 

@@ -79,6 +79,7 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                     description: detail.items[index].description,
                     quantity: detail.items[index].quantity,
                     unitPrice: detail.items[index].unitPrice,
+                    estimatedUnitCost: detail.items[index].estimatedUnitCost,
                     position: index,
                   ),
               ];
@@ -100,12 +101,12 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
   }
 
   DocumentTotals get _totals => DocumentTotals.calculate(
-        lines: _lines,
-        discountType: _discountType,
-        discountValue: _discountType == 'percent'
-            ? double.tryParse(_discountController.text) ?? 0
-            : (Money.tryParse(_discountController.text)?.cents ?? 0),
-      );
+    lines: _lines,
+    discountType: _discountType,
+    discountValue: _discountType == 'percent'
+        ? double.tryParse(_discountController.text) ?? 0
+        : (Money.tryParse(_discountController.text)?.cents ?? 0),
+  );
 
   Future<void> _save() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
@@ -123,7 +124,9 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
 
     setState(() => _isSaving = true);
     try {
-      await ref.read(orderRepositoryProvider).saveOrder(
+      await ref
+          .read(orderRepositoryProvider)
+          .saveOrder(
             businessId: businessId,
             orderId: widget.orderId,
             customerId: _customerId!,
@@ -166,9 +169,7 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
     final members = ref.watch(businessMembersProvider).value ?? const [];
 
     if (_loading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
@@ -208,7 +209,9 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                   ),
               ],
               onChanged: (value) => setState(
-                () => _assignedTo = (value == null || value.isEmpty) ? null : value,
+                () => _assignedTo = (value == null || value.isEmpty)
+                    ? null
+                    : value,
               ),
             ),
             const SizedBox(height: 6),
@@ -247,6 +250,7 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                     id: product.id,
                     name: product.name,
                     price: product.basePrice,
+                    productionCost: product.productionCost,
                   ),
               ],
             ),
@@ -256,11 +260,15 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     initialValue: _discountType,
-                    decoration:
-                        const InputDecoration(labelText: 'Discount type'),
+                    decoration: const InputDecoration(
+                      labelText: 'Discount type',
+                    ),
                     items: const [
                       DropdownMenuItem(value: 'none', child: Text('None')),
-                      DropdownMenuItem(value: 'percent', child: Text('Percent')),
+                      DropdownMenuItem(
+                        value: 'percent',
+                        child: Text('Percent'),
+                      ),
                       DropdownMenuItem(value: 'amount', child: Text('Amount')),
                     ],
                     onChanged: (value) => setState(() {
@@ -276,8 +284,9 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                         ? 'Discount (%)'
                         : 'Discount amount',
                     controller: _discountController,
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                   ),
                 ),
               ],

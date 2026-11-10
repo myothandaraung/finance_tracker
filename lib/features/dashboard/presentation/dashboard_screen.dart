@@ -169,10 +169,16 @@ class _DashboardBody extends StatelessWidget {
                   Expanded(
                     child: MetricCard(
                       label: 'Production cost',
-                      value: MoneyFormatter.format(summary.actualProductionCost),
+                      value: MoneyFormatter.format(
+                        summary.effectiveProductionCost,
+                      ),
                       icon: Icons.precision_manufacturing_outlined,
                       color: AppColors.accent,
-                      hint: 'Estimated ${MoneyFormatter.format(summary.estimatedProductionCost)}',
+                      hint:
+                          summary.actualProductionCost ==
+                              summary.effectiveProductionCost
+                          ? 'Recorded production cost'
+                          : 'Saved estimate; actual cost not recorded',
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -191,34 +197,17 @@ class _DashboardBody extends StatelessWidget {
                 children: [
                   Expanded(
                     child: MetricCard(
-                      label: 'Profit',
-                      value: MoneyFormatter.format(summary.profit),
+                      label: 'Gross profit',
+                      value: MoneyFormatter.format(summary.effectiveProfit),
                       icon: Icons.savings_outlined,
-                      color: summary.profit.isNegative
+                      color: summary.effectiveProfit.isNegative
                           ? AppColors.danger
                           : AppColors.positive,
                       isHighlighted: true,
-                      hint: 'Revenue minus actual cost',
+                      hint: 'Revenue minus production cost',
                     ),
                   ),
                   const SizedBox(width: 10),
-                  Expanded(
-                    child: MetricCard(
-                      label: 'Profit (est.)',
-                      value: MoneyFormatter.format(summary.profitEstimated),
-                      icon: Icons.savings_outlined,
-                      color: summary.profitEstimated.isNegative
-                          ? AppColors.danger
-                          : AppColors.positive,
-                      isHighlighted: true,
-                      hint: 'Revenue minus estimated cost',
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
                   Expanded(
                     child: MetricCard(
                       label: 'Receivables',
@@ -228,7 +217,11 @@ class _DashboardBody extends StatelessWidget {
                       hint: 'Outstanding on all orders',
                     ),
                   ),
-                  const SizedBox(width: 8),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
                   _StatusPill(
                     label: 'Open orders',
                     value: summary.ordersOpen,
@@ -445,10 +438,8 @@ class _TrendCard extends StatelessWidget {
                   gridData: FlGridData(
                     show: true,
                     drawVerticalLine: false,
-                    getDrawingHorizontalLine: (_) => const FlLine(
-                      color: AppColors.divider,
-                      strokeWidth: 1,
-                    ),
+                    getDrawingHorizontalLine: (_) =>
+                        const FlLine(color: AppColors.divider, strokeWidth: 1),
                   ),
                   borderData: FlBorderData(show: false),
                   titlesData: FlTitlesData(
@@ -456,13 +447,13 @@ class _TrendCard extends StatelessWidget {
                       sideTitles: SideTitles(
                         showTitles: true,
                         reservedSize: 52,
-                        interval: maxValue <= 0 ? 50 : (maxValue / 4).ceilToDouble(),
+                        interval: maxValue <= 0
+                            ? 50
+                            : (maxValue / 4).ceilToDouble(),
                         getTitlesWidget: (value, meta) => Padding(
                           padding: const EdgeInsets.only(right: 6),
                           child: Text(
-                            MoneyFormatter.formatCompact(
-                              _toMoney(value),
-                            ),
+                            MoneyFormatter.formatCompact(_toMoney(value)),
                             style: const TextStyle(
                               fontSize: 10,
                               color: AppColors.textSecondary,

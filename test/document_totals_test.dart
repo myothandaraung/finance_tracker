@@ -29,6 +29,7 @@ void main() {
     expect(totals.netSales.cents, 200000);
     expect(totals.total.cents, 200000);
     expect(totals.estimatedCost.cents, 80000);
+    expect(totals.estimatedProfit.cents, 120000);
   });
 
   test('applies a percentage discount before the tax', () {
@@ -42,6 +43,7 @@ void main() {
     expect(totals.discountAmount.cents, 20000);
     expect(totals.netSales.cents, 180000);
     expect(totals.total.cents, 180000);
+    expect(totals.estimatedProfit.cents, 100000);
   });
 
   test('applies a fixed discount and never goes below zero', () {
@@ -59,11 +61,7 @@ void main() {
   test('keeps the server rounding for a line with a fraction', () {
     final totals = DocumentTotals.calculate(
       lines: const [
-        LineInput(
-          description: 'Custom',
-          quantity: 3,
-          unitPrice: Money(3333),
-        ),
+        LineInput(description: 'Custom', quantity: 3, unitPrice: Money(3333)),
       ],
       discountType: 'none',
       discountValue: 0,

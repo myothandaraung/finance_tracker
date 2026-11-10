@@ -24,13 +24,13 @@ class LineInput {
 
   /// Payload sent to the `rpc_save_quotation` / `rpc_save_order` functions.
   Map<String, dynamic> toRpcPayload() => {
-        'product_id': productId ?? '',
-        'description': description,
-        'quantity': quantity,
-        'unit_price_cents': unitPrice.cents,
-        'estimated_cost_cents': estimatedUnitCost.cents,
-        'position': position,
-      };
+    'product_id': productId ?? '',
+    'description': description,
+    'quantity': quantity,
+    'unit_price_cents': unitPrice.cents,
+    'estimated_cost_cents': estimatedUnitCost.cents,
+    'position': position,
+  };
 
   LineInput copyWith({
     String? productId,
@@ -71,6 +71,9 @@ class DocumentTotals {
   final Money netSales;
   final Money total;
   final Money estimatedCost;
+
+  /// Profit using the production cost captured on the document lines.
+  Money get estimatedProfit => netSales - estimatedCost;
 
   /// Computes the totals of a quotation or an order.
   ///

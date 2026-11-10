@@ -44,7 +44,8 @@ class OrderDetailScreen extends ConsumerWidget {
                 if (role.canManageOperations && data.order.allowsItemEditing)
                   IconButton(
                     icon: const Icon(Icons.edit_outlined),
-                    onPressed: () => context.push('/app/orders/${data.order.id}/edit'),
+                    onPressed: () =>
+                        context.push('/app/orders/${data.order.id}/edit'),
                   ),
                 PopupMenuButton<String>(
                   onSelected: (value) => _onMenu(context, ref, value, data),
@@ -135,7 +136,8 @@ class OrderDetailScreen extends ConsumerWidget {
                       ),
                       InfoRow(
                         label: 'Discount',
-                        value: '- ${MoneyFormatter.format(order.discountAmount)}',
+                        value:
+                            '- ${MoneyFormatter.format(order.discountAmount)}',
                       ),
                       const Divider(height: 18),
                       InfoRow(
@@ -157,7 +159,9 @@ class OrderDetailScreen extends ConsumerWidget {
                       ),
                       InfoRow(
                         label: 'Outstanding',
-                        value: MoneyFormatter.format(financials.outstandingAmount),
+                        value: MoneyFormatter.format(
+                          financials.outstandingAmount,
+                        ),
                         bold: true,
                         valueColor: financials.outstandingAmount.cents > 0
                             ? AppColors.danger
@@ -173,13 +177,18 @@ class OrderDetailScreen extends ConsumerWidget {
                           label: 'Production cost source',
                           value: financials.productionCostSource == 'actual'
                               ? 'Actual (cost entries)'
-                              : 'Estimated (product cost x qty)',
+                              : financials.productionCostSource ==
+                                    'order_snapshot'
+                              ? 'Saved with order'
+                              : 'None',
                         ),
                       if (financials.estimatedProductionCost.cents > 0 &&
                           financials.productionCostSource != 'actual')
                         InfoRow(
                           label: 'Estimated production cost',
-                          value: MoneyFormatter.format(financials.estimatedProductionCost),
+                          value: MoneyFormatter.format(
+                            financials.estimatedProductionCost,
+                          ),
                         ),
                       InfoRow(
                         label: 'Actual cost',
@@ -193,10 +202,13 @@ class OrderDetailScreen extends ConsumerWidget {
                             ? AppColors.positive
                             : AppColors.negative,
                       ),
-                      if (financials.profitEstimated != null)
+                      if (financials.profitEstimated != null &&
+                          financials.profitEstimated != financials.profit)
                         InfoRow(
                           label: 'Profit (estimated)',
-                          value: MoneyFormatter.format(financials.profitEstimated!),
+                          value: MoneyFormatter.format(
+                            financials.profitEstimated!,
+                          ),
                           valueColor: financials.profitEstimated!.cents >= 0
                               ? AppColors.positive
                               : AppColors.negative,
@@ -204,7 +216,8 @@ class OrderDetailScreen extends ConsumerWidget {
                       if (financials.netSales.cents > 0)
                         InfoRow(
                           label: 'Margin',
-                          value: '${financials.marginPercent.toStringAsFixed(1)}%',
+                          value:
+                              '${financials.marginPercent.toStringAsFixed(1)}%',
                         ),
                     ],
                   ),
@@ -213,19 +226,20 @@ class OrderDetailScreen extends ConsumerWidget {
                     order.status.allowedNext.isNotEmpty) ...[
                   const SizedBox(height: 12),
                   for (final status in order.status.allowedNext)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: OutlinedButton.icon(
-                        onPressed: () => _changeStatus(context, ref, status),
-                        icon: Icon(_iconFor(status)),
-                        label: Text(_labelFor(status)),
-                        style: status == OrderStatus.cancelled
-                            ? OutlinedButton.styleFrom(
-                                foregroundColor: AppColors.danger,
-                              )
-                            : null,
+                    if (status != OrderStatus.cancelled || role.canCancelOrders)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: OutlinedButton.icon(
+                          onPressed: () => _changeStatus(context, ref, status),
+                          icon: Icon(_iconFor(status)),
+                          label: Text(_labelFor(status)),
+                          style: status == OrderStatus.cancelled
+                              ? OutlinedButton.styleFrom(
+                                  foregroundColor: AppColors.danger,
+                                )
+                              : null,
+                        ),
                       ),
-                    ),
                 ],
                 const SizedBox(height: 4),
                 Card(
@@ -256,7 +270,9 @@ class OrderDetailScreen extends ConsumerWidget {
                             ),
                             trailing: Text(
                               MoneyFormatter.format(item.lineTotal),
-                              style: const TextStyle(fontWeight: FontWeight.w600),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                     ],
@@ -311,7 +327,8 @@ class OrderDetailScreen extends ConsumerWidget {
                             subtitle: Text(
                               [
                                 AppDate.format(payment.paidAt),
-                                if (payment.reference != null) payment.reference!,
+                                if (payment.reference != null)
+                                  payment.reference!,
                               ].join(' · '),
                             ),
                             trailing: Row(
@@ -421,7 +438,8 @@ class OrderDetailScreen extends ConsumerWidget {
                                   IconButton(
                                     icon: const Icon(Icons.delete_outline),
                                     color: AppColors.danger,
-                                    onPressed: () => _deleteCost(context, ref, cost),
+                                    onPressed: () =>
+                                        _deleteCost(context, ref, cost),
                                   ),
                               ],
                             ),
@@ -446,7 +464,7 @@ class OrderDetailScreen extends ConsumerWidget {
                               entry.fromStatus == null
                                   ? OrderStatus.fromDb(entry.toStatus).label
                                   : '${OrderStatus.fromDb(entry.fromStatus).label} → '
-                                      '${OrderStatus.fromDb(entry.toStatus).label}',
+                                        '${OrderStatus.fromDb(entry.toStatus).label}',
                             ),
                             subtitle: Text(
                               [
@@ -469,26 +487,26 @@ class OrderDetailScreen extends ConsumerWidget {
   }
 
   IconData _iconFor(OrderStatus status) => switch (status) {
-        OrderStatus.confirmed => Icons.check_circle_outline,
-        OrderStatus.inProgress => Icons.play_circle_outline,
-        OrderStatus.onHold => Icons.pause_circle_outline,
-        OrderStatus.completed => Icons.task_alt,
-        OrderStatus.delivered => Icons.local_shipping_outlined,
-        OrderStatus.closed => Icons.lock_outline,
-        OrderStatus.cancelled => Icons.delete_outline,
-        _ => Icons.arrow_forward,
-      };
+    OrderStatus.confirmed => Icons.check_circle_outline,
+    OrderStatus.inProgress => Icons.play_circle_outline,
+    OrderStatus.onHold => Icons.pause_circle_outline,
+    OrderStatus.completed => Icons.task_alt,
+    OrderStatus.delivered => Icons.local_shipping_outlined,
+    OrderStatus.closed => Icons.lock_outline,
+    OrderStatus.cancelled => Icons.delete_outline,
+    _ => Icons.arrow_forward,
+  };
 
   String _labelFor(OrderStatus status) => switch (status) {
-        OrderStatus.confirmed => 'Confirm order',
-        OrderStatus.inProgress => 'Start production',
-        OrderStatus.onHold => 'Put on hold',
-        OrderStatus.completed => 'Mark as completed',
-        OrderStatus.delivered => 'Mark as delivered',
-        OrderStatus.closed => 'Close order',
-        OrderStatus.cancelled => 'Cancel order',
-        _ => status.label,
-      };
+    OrderStatus.confirmed => 'Confirm order',
+    OrderStatus.inProgress => 'Start production',
+    OrderStatus.onHold => 'Put on hold',
+    OrderStatus.completed => 'Mark as completed',
+    OrderStatus.delivered => 'Mark as delivered',
+    OrderStatus.closed => 'Close order',
+    OrderStatus.cancelled => 'Cancel order',
+    _ => status.label,
+  };
 
   Future<void> _changeStatus(
     BuildContext context,
@@ -509,10 +527,9 @@ class OrderDetailScreen extends ConsumerWidget {
     }
 
     try {
-      await ref.read(orderRepositoryProvider).updateStatus(
-            orderId: orderId,
-            toStatus: status.dbValue,
-          );
+      await ref
+          .read(orderRepositoryProvider)
+          .updateStatus(orderId: orderId, toStatus: status.dbValue);
       ref.invalidate(orderDetailProvider(orderId));
       ref.invalidate(ordersProvider);
       if (!context.mounted) return;
@@ -609,9 +626,9 @@ class OrderDetailScreen extends ConsumerWidget {
     if (!confirmed) return;
 
     try {
-      await ref.read(paymentRepositoryProvider).voidPayment(
-            paymentId: payment.id,
-          );
+      await ref
+          .read(paymentRepositoryProvider)
+          .voidPayment(paymentId: payment.id);
       ref.invalidate(orderDetailProvider(orderId));
     } catch (error) {
       if (!context.mounted) return;
@@ -627,8 +644,7 @@ class OrderDetailScreen extends ConsumerWidget {
     WidgetRef ref,
     PaymentRecord payment,
   ) async {
-    final amountController =
-        TextEditingController(text: payment.amount.plain);
+    final amountController = TextEditingController(text: payment.amount.plain);
     final reasonController = TextEditingController();
 
     final confirmed = await showDialog<bool>(
@@ -638,15 +654,9 @@ class OrderDetailScreen extends ConsumerWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AmountField(
-              label: 'Amount',
-              controller: amountController,
-            ),
+            AmountField(label: 'Amount', controller: amountController),
             const SizedBox(height: 12),
-            AppTextField(
-              label: 'Reason',
-              controller: reasonController,
-            ),
+            AppTextField(label: 'Reason', controller: reasonController),
           ],
         ),
         actions: [
@@ -670,11 +680,9 @@ class OrderDetailScreen extends ConsumerWidget {
     if (confirmed != true || amount == null || !context.mounted) return;
 
     try {
-      await ref.read(paymentRepositoryProvider).recordRefund(
-            paymentId: payment.id,
-            amount: amount,
-            reason: reason,
-          );
+      await ref
+          .read(paymentRepositoryProvider)
+          .recordRefund(paymentId: payment.id, amount: amount, reason: reason);
       ref.invalidate(orderDetailProvider(orderId));
       if (!context.mounted) return;
       showAppSnackBar(context, 'Refund recorded');

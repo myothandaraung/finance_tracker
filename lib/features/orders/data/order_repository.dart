@@ -49,7 +49,7 @@ class OrderRepository extends SupabaseRepository {
     required List<Map<String, dynamic>> items,
     String? assignedTo,
   }) async {
-    return callRpc(
+    final result = await callRpc(
       'rpc_save_order',
       params: {
         'p_business_id': businessId,
@@ -63,6 +63,11 @@ class OrderRepository extends SupabaseRepository {
         'p_assigned_to': assignedTo,
       },
     );
+    await callRpc(
+      'rpc_set_order_item_estimated_costs',
+      params: {'p_order_id': result['id'], 'p_items': items},
+    );
+    return result;
   }
 
   Future<Map<String, dynamic>> updateStatus({
@@ -72,11 +77,7 @@ class OrderRepository extends SupabaseRepository {
   }) async {
     return callRpc(
       'rpc_update_order_status',
-      params: {
-        'p_order_id': orderId,
-        'p_to_status': toStatus,
-        'p_note': note,
-      },
+      params: {'p_order_id': orderId, 'p_to_status': toStatus, 'p_note': note},
     );
   }
 
@@ -99,10 +100,7 @@ class OrderRepository extends SupabaseRepository {
   }) async {
     return callRpc(
       'rpc_assign_order',
-      params: {
-        'p_order_id': orderId,
-        'p_user_id': userId,
-      },
+      params: {'p_order_id': orderId, 'p_user_id': userId},
     );
   }
 
@@ -130,9 +128,6 @@ class OrderRepository extends SupabaseRepository {
   }
 
   Future<void> deleteCost(String costId) async {
-    await callRpc(
-      'rpc_delete_order_cost',
-      params: {'p_cost_id': costId},
-    );
+    await callRpc('rpc_delete_order_cost', params: {'p_cost_id': costId});
   }
 }

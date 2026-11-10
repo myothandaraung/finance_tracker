@@ -38,6 +38,13 @@ class DashboardSummary {
   final Money profitEstimated;
   final List<CategoryTotal> expensesByCategory;
 
+  /// Cost used for profitability: recorded actual cost when available,
+  /// otherwise the production-cost snapshot saved with the order.
+  Money get effectiveProductionCost => estimatedProductionCost;
+
+  /// Profit calculated from [effectiveProductionCost].
+  Money get effectiveProfit => profitEstimated;
+
   factory DashboardSummary.fromJson(Map<String, dynamic> json) {
     return DashboardSummary(
       from: DateTime.tryParse('${json['from']}') ?? DateTime.now(),
@@ -50,14 +57,15 @@ class DashboardSummary {
       revenue: Money(json['revenue_cents'] as int? ?? 0),
       expenses: Money(json['expenses_cents'] as int? ?? 0),
       productionCost: Money(json['production_cost_cents'] as int? ?? 0),
-      actualProductionCost:
-          Money(json['actual_production_cost_cents'] as int? ?? 0),
-      estimatedProductionCost:
-          Money(json['estimated_production_cost_cents'] as int? ?? 0),
+      actualProductionCost: Money(
+        json['actual_production_cost_cents'] as int? ?? 0,
+      ),
+      estimatedProductionCost: Money(
+        json['estimated_production_cost_cents'] as int? ?? 0,
+      ),
       receivables: Money(json['receivables_cents'] as int? ?? 0),
       profit: Money(json['profit_cents'] as int? ?? 0),
-      profitEstimated:
-          Money(json['profit_cents_estimated'] as int? ?? 0),
+      profitEstimated: Money(json['profit_cents_estimated'] as int? ?? 0),
       expensesByCategory: ((json['expenses_by_category'] as List?) ?? const [])
           .whereType<Map>()
           .map(
@@ -142,7 +150,9 @@ class SalesSummary {
   final List<StatusCount> byStatus;
 
   factory SalesSummary.fromJson(Map<String, dynamic> json) {
-    final totals = Map<String, dynamic>.from(json['totals'] as Map? ?? const {});
+    final totals = Map<String, dynamic>.from(
+      json['totals'] as Map? ?? const {},
+    );
     return SalesSummary(
       from: DateTime.tryParse('${json['from']}') ?? DateTime.now(),
       to: DateTime.tryParse('${json['to']}') ?? DateTime.now(),
@@ -222,14 +232,15 @@ class ProfitabilityRow {
       actualCost: Money(json['actual_cost_cents'] as int? ?? 0),
       profit: Money(json['profit_cents'] as int? ?? 0),
       marginPercent: (json['margin_pct'] as num?)?.toDouble(),
-      estimatedProductionCost:
-          Money(json['estimated_production_cost_cents'] as int? ?? 0),
+      estimatedProductionCost: Money(
+        json['estimated_production_cost_cents'] as int? ?? 0,
+      ),
       productionCostSource: json['production_cost_source'] as String?,
       profitEstimated: json['profit_cents_estimated'] == null
           ? null
           : Money((json['profit_cents_estimated'] as int?) ?? 0),
-      marginPercentEstimated:
-          (json['margin_pct_estimated'] as num?)?.toDouble(),
+      marginPercentEstimated: (json['margin_pct_estimated'] as num?)
+          ?.toDouble(),
     );
   }
 }
@@ -259,7 +270,9 @@ class ProfitabilityReport {
   final Money? profitEstimated;
 
   factory ProfitabilityReport.fromJson(Map<String, dynamic> json) {
-    final totals = Map<String, dynamic>.from(json['totals'] as Map? ?? const {});
+    final totals = Map<String, dynamic>.from(
+      json['totals'] as Map? ?? const {},
+    );
     return ProfitabilityReport(
       from: DateTime.tryParse('${json['from']}') ?? DateTime.now(),
       to: DateTime.tryParse('${json['to']}') ?? DateTime.now(),
@@ -269,10 +282,14 @@ class ProfitabilityReport {
       profit: Money(totals['profit_cents'] as int? ?? 0),
       rows: ((json['rows'] as List?) ?? const [])
           .whereType<Map>()
-          .map((item) => ProfitabilityRow.fromJson(Map<String, dynamic>.from(item)))
+          .map(
+            (item) =>
+                ProfitabilityRow.fromJson(Map<String, dynamic>.from(item)),
+          )
           .toList(),
-      estimatedProductionCost:
-          Money(totals['estimated_production_cost_cents'] as int? ?? 0),
+      estimatedProductionCost: Money(
+        totals['estimated_production_cost_cents'] as int? ?? 0,
+      ),
       profitEstimated: totals['profit_cents_estimated'] == null
           ? null
           : Money((totals['profit_cents_estimated'] as int?) ?? 0),
@@ -307,13 +324,13 @@ class ReceivableRow {
   final String ageBucket;
 
   String get ageLabel => switch (ageBucket) {
-        'current' => 'Current',
-        '1_30' => '1–30 days',
-        '31_60' => '31–60 days',
-        '61_90' => '61–90 days',
-        '90_plus' => '90+ days',
-        _ => 'No due date',
-      };
+    'current' => 'Current',
+    '1_30' => '1–30 days',
+    '31_60' => '31–60 days',
+    '61_90' => '61–90 days',
+    '90_plus' => '90+ days',
+    _ => 'No due date',
+  };
 
   factory ReceivableRow.fromJson(Map<String, dynamic> json) {
     return ReceivableRow(
@@ -352,7 +369,9 @@ class ReceivablesReport {
       overdue: Money(json['overdue_cents'] as int? ?? 0),
       rows: ((json['rows'] as List?) ?? const [])
           .whereType<Map>()
-          .map((item) => ReceivableRow.fromJson(Map<String, dynamic>.from(item)))
+          .map(
+            (item) => ReceivableRow.fromJson(Map<String, dynamic>.from(item)),
+          )
           .toList(),
     );
   }
