@@ -92,7 +92,10 @@ class ExpenseRepository extends SupabaseRepository {
     DateTime? to,
   }) async {
     try {
-      var query = client.from('expenses').select().eq('business_id', businessId);
+      var query = client
+          .from('expenses')
+          .select()
+          .eq('business_id', businessId);
       if (from != null) query = query.gte('expense_date', _date(from));
       if (to != null) query = query.lte('expense_date', _date(to));
       return await query.order('expense_date', ascending: false);
@@ -187,10 +190,7 @@ class ExpenseRepository extends SupabaseRepository {
   }
 
   Future<void> deleteExpense(String expenseId) async {
-    await callRpc(
-      'rpc_delete_expense',
-      params: {'p_expense_id': expenseId},
-    );
+    await callRpc('rpc_delete_expense', params: {'p_expense_id': expenseId});
   }
 
   static String _date(DateTime value) =>

@@ -30,11 +30,12 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
     final customers = ref.watch(customersProvider);
     final role = ref.watch(currentRoleProvider);
 
-    final filtered = customers.value
+    final filtered =
+        customers.value
             ?.where(
-              (customer) => customer.name
-                  .toLowerCase()
-                  .contains(_search.trim().toLowerCase()),
+              (customer) => customer.name.toLowerCase().contains(
+                _search.trim().toLowerCase(),
+              ),
             )
             .toList() ??
         const [];
@@ -105,8 +106,9 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                     return Card(
                       child: ListTile(
                         leading: CircleAvatar(
-                          backgroundColor:
-                              AppColors.primary.withValues(alpha: 0.12),
+                          backgroundColor: AppColors.primary.withValues(
+                            alpha: 0.12,
+                          ),
                           child: Text(
                             customer.name.isEmpty
                                 ? '?'
@@ -128,7 +130,8 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                           ].join(' · '),
                         ),
                         trailing: const Icon(Icons.chevron_right),
-                        onTap: () => context.push('/app/customers/${customer.id}'),
+                        onTap: () =>
+                            context.push('/app/customers/${customer.id}'),
                       ),
                     );
                   },

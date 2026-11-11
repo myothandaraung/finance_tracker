@@ -11,12 +11,12 @@ class AuthRepository extends SupabaseRepository {
 
   User? get currentUser => client.auth.currentUser;
 
-  Future<void> signIn({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> signIn({required String email, required String password}) async {
     try {
-      await client.auth.signInWithPassword(email: email.trim(), password: password);
+      await client.auth.signInWithPassword(
+        email: email.trim(),
+        password: password,
+      );
     } catch (error) {
       throw AppException.fromSupabase(error);
     }
@@ -65,10 +65,7 @@ class AuthRepository extends SupabaseRepository {
   Future<void> updateProfile({String? displayName, String? phone}) async {
     await callRpc(
       'rpc_update_profile',
-      params: {
-        'p_display_name': displayName,
-        'p_phone': phone,
-      },
+      params: {'p_display_name': displayName, 'p_phone': phone},
     );
   }
 }

@@ -12,7 +12,8 @@ class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
 
   @override
-  ConsumerState<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+  ConsumerState<ForgotPasswordScreen> createState() =>
+      _ForgotPasswordScreenState();
 }
 
 class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
@@ -32,7 +33,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
     setState(() => _isLoading = true);
     try {
-      await ref.read(authRepositoryProvider).sendPasswordReset(_emailController.text);
+      await ref
+          .read(authRepositoryProvider)
+          .sendPasswordReset(_emailController.text);
       if (!mounted) return;
       showAppSnackBar(
         context,
@@ -42,7 +45,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     } catch (error) {
       if (!mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not send the reset email. Please try again.';
       showAppSnackBar(context, message, isError: true);
     } finally {

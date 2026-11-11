@@ -12,10 +12,7 @@ class BusinessRepository extends SupabaseRepository {
   }) async {
     final result = await callRpc(
       'rpc_create_business',
-      params: {
-        'p_name': name,
-        'p_currency_code': currencyCode,
-      },
+      params: {'p_name': name, 'p_currency_code': currencyCode},
     );
     return BusinessMembership.fromJson({
       'business_id': result['business_id'],
@@ -49,11 +46,7 @@ class BusinessRepository extends SupabaseRepository {
   }) async {
     final result = await callRpc(
       'rpc_invite_member',
-      params: {
-        'p_business_id': businessId,
-        'p_email': email,
-        'p_role': role,
-      },
+      params: {'p_business_id': businessId, 'p_email': email, 'p_role': role},
     );
     return BusinessMember.fromJson(result);
   }
@@ -64,17 +57,11 @@ class BusinessRepository extends SupabaseRepository {
   }) async {
     await callRpc(
       'rpc_update_member_role',
-      params: {
-        'p_member_id': memberId,
-        'p_role': role,
-      },
+      params: {'p_member_id': memberId, 'p_role': role},
     );
   }
 
   Future<void> removeMember(String memberId) async {
-    await callRpc(
-      'rpc_remove_member',
-      params: {'p_member_id': memberId},
-    );
+    await callRpc('rpc_remove_member', params: {'p_member_id': memberId});
   }
 }

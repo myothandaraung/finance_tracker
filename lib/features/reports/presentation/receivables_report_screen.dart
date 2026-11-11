@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/errors/app_exception.dart';
 import '../../../core/export/csv_exporter.dart';
 import '../../../core/export/export_service.dart';
 import '../../../core/money/money.dart';
@@ -55,8 +56,8 @@ class ReceivablesReportScreen extends ConsumerWidget {
 
           final buckets = <String, int>{};
           for (final row in data.rows) {
-            buckets[row.ageBucket] = (buckets[row.ageBucket] ?? 0) +
-                row.outstanding.cents;
+            buckets[row.ageBucket] =
+                (buckets[row.ageBucket] ?? 0) + row.outstanding.cents;
           }
 
           return ListView(
@@ -110,9 +111,7 @@ class ReceivablesReportScreen extends ConsumerWidget {
                                 ),
                               ),
                               Text(
-                                MoneyFormatter.format(
-                                  _toMoney(entry.value),
-                                ),
+                                MoneyFormatter.format(_toMoney(entry.value)),
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -172,18 +171,15 @@ class ReceivablesReportScreen extends ConsumerWidget {
   static Money _toMoney(int cents) => Money(cents);
 
   String _bucketLabel(String bucket) => switch (bucket) {
-        'current' => 'Current',
-        '1_30' => '1–30 days overdue',
-        '31_60' => '31–60 days overdue',
-        '61_90' => '61–90 days overdue',
-        '90_plus' => 'More than 90 days',
-        _ => 'No due date',
-      };
+    'current' => 'Current',
+    '1_30' => '1–30 days overdue',
+    '31_60' => '31–60 days overdue',
+    '61_90' => '61–90 days overdue',
+    '90_plus' => 'More than 90 days',
+    _ => 'No due date',
+  };
 
-  Future<void> _export(
-    BuildContext context,
-    ReceivablesReport report,
-  ) async {
+  Future<void> _export(BuildContext context, ReceivablesReport report) async {
     final rows = <List<dynamic>>[
       [
         'Order',
@@ -219,7 +215,7 @@ class ReceivablesReportScreen extends ConsumerWidget {
       showAppSnackBar(context, 'Exported to $path');
     } catch (error) {
       if (!context.mounted) return;
-      showAppSnackBar(context, 'Could not export the report', isError: true);
+      showAppSnackBar(context, errorDisplayMessage(error), isError: true);
     }
   }
 }

@@ -89,7 +89,7 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
       if (!mounted) return;
       setState(() => _loading = false);
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not load the order';
       showAppSnackBar(context, message, isError: true);
     }
@@ -154,7 +154,7 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
     } catch (error) {
       if (!mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not save the order';
       showAppSnackBar(context, message, isError: true);
     } finally {

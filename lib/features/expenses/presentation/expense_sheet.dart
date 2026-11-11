@@ -52,7 +52,9 @@ class _ExpenseSheetState extends ConsumerState<ExpenseSheet> {
 
     setState(() => _isSaving = true);
     try {
-      await ref.read(expenseRepositoryProvider).recordExpense(
+      await ref
+          .read(expenseRepositoryProvider)
+          .recordExpense(
             businessId: businessId,
             amount: Money.tryParse(_amountController.text) ?? Money.zero,
             description: _descriptionController.text.trim(),
@@ -67,7 +69,7 @@ class _ExpenseSheetState extends ConsumerState<ExpenseSheet> {
     } catch (error) {
       if (!mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not record the expense';
       showAppSnackBar(context, message, isError: true);
     } finally {
@@ -143,8 +145,9 @@ class _ExpenseSheetState extends ConsumerState<ExpenseSheet> {
                   onPressed: () async {
                     final picked = await showDatePicker(
                       context: context,
-                      firstDate: DateTime.now()
-                          .subtract(const Duration(days: 730)),
+                      firstDate: DateTime.now().subtract(
+                        const Duration(days: 730),
+                      ),
                       lastDate: DateTime.now(),
                       initialDate: _expenseDate,
                     );

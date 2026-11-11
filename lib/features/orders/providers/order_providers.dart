@@ -69,7 +69,9 @@ final ordersProvider = FutureProvider<List<Order>>((ref) async {
     assignedTo: filter.assignedTo,
   );
 
-  final customers = await ref.watch(customerRepositoryProvider).listCustomers(businessId);
+  final customers = await ref
+      .watch(customerRepositoryProvider)
+      .listCustomers(businessId);
   final names = {for (final customer in customers) customer.id: customer.name};
 
   final orders = rows
@@ -92,8 +94,11 @@ final ordersProvider = FutureProvider<List<Order>>((ref) async {
       )
       .toList();
 });
+
 /// Full detail of one order: items, money, costs and history.
-final orderDetailProvider =
-    FutureProvider.family<OrderDetail, String>((ref, orderId) async {
+final orderDetailProvider = FutureProvider.family<OrderDetail, String>((
+  ref,
+  orderId,
+) async {
   return ref.watch(orderRepositoryProvider).orderDetail(orderId);
 });

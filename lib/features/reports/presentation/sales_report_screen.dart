@@ -136,10 +136,8 @@ class _MonthlyChart extends StatelessWidget {
                   gridData: FlGridData(
                     show: true,
                     drawVerticalLine: false,
-                    getDrawingHorizontalLine: (_) => const FlLine(
-                      color: AppColors.divider,
-                      strokeWidth: 1,
-                    ),
+                    getDrawingHorizontalLine: (_) =>
+                        const FlLine(color: AppColors.divider, strokeWidth: 1),
                   ),
                   borderData: FlBorderData(show: false),
                   titlesData: FlTitlesData(
@@ -147,8 +145,9 @@ class _MonthlyChart extends StatelessWidget {
                       sideTitles: SideTitles(
                         showTitles: true,
                         reservedSize: 52,
-                        interval:
-                            maxValue <= 0 ? 50 : (maxValue / 4).ceilToDouble(),
+                        interval: maxValue <= 0
+                            ? 50
+                            : (maxValue / 4).ceilToDouble(),
                         getTitlesWidget: (value, meta) => Padding(
                           padding: const EdgeInsets.only(right: 6),
                           child: Text(

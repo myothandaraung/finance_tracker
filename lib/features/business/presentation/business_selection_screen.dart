@@ -74,7 +74,10 @@ class BusinessSelectionScreen extends ConsumerWidget {
                     ),
                     subtitle: Text(membership.role.label),
                     trailing: membership.businessId == activeBusinessId
-                        ? const Icon(Icons.check_circle, color: AppColors.success)
+                        ? const Icon(
+                            Icons.check_circle,
+                            color: AppColors.success,
+                          )
                         : const Icon(Icons.chevron_right),
                     onTap: () async {
                       await ref
@@ -134,9 +137,9 @@ class BusinessSelectionScreen extends ConsumerWidget {
     if (created != true || name.isEmpty || !context.mounted) return;
 
     try {
-      final membership = await ref.read(businessRepositoryProvider).createBusiness(
-            name: name,
-          );
+      final membership = await ref
+          .read(businessRepositoryProvider)
+          .createBusiness(name: name);
       await ref
           .read(activeBusinessIdProvider.notifier)
           .select(membership.businessId);
@@ -145,7 +148,7 @@ class BusinessSelectionScreen extends ConsumerWidget {
     } catch (error) {
       if (!context.mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not create the business';
       showAppSnackBar(context, message, isError: true);
     }

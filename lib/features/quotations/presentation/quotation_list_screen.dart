@@ -16,7 +16,8 @@ class QuotationListScreen extends ConsumerStatefulWidget {
   const QuotationListScreen({super.key});
 
   @override
-  ConsumerState<QuotationListScreen> createState() => _QuotationListScreenState();
+  ConsumerState<QuotationListScreen> createState() =>
+      _QuotationListScreenState();
 }
 
 class _QuotationListScreenState extends ConsumerState<QuotationListScreen> {
@@ -73,8 +74,9 @@ class _QuotationListScreenState extends ConsumerState<QuotationListScreen> {
                 _FilterChip(
                   label: 'All',
                   selected: filter.status == null,
-                  onTap: () =>
-                      ref.read(quotationFilterProvider.notifier).setStatus(null),
+                  onTap: () => ref
+                      .read(quotationFilterProvider.notifier)
+                      .setStatus(null),
                 ),
                 for (final status in QuotationStatus.values)
                   _FilterChip(
@@ -98,11 +100,13 @@ class _QuotationListScreenState extends ConsumerState<QuotationListScreen> {
                 if (items.isEmpty) {
                   return EmptyState(
                     title: 'No quotations yet',
-                    message: 'Create a quotation to send a price to a customer.',
+                    message:
+                        'Create a quotation to send a price to a customer.',
                     icon: Icons.request_quote_outlined,
                     action: role.canManageOperations
                         ? FilledButton.icon(
-                            onPressed: () => context.push('/app/quotations/new'),
+                            onPressed: () =>
+                                context.push('/app/quotations/new'),
                             icon: const Icon(Icons.add),
                             label: const Text('New quotation'),
                           )
@@ -154,7 +158,9 @@ class _QuotationListScreenState extends ConsumerState<QuotationListScreen> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      MoneyFormatter.format(quotation.totalAmount),
+                                      MoneyFormatter.format(
+                                        quotation.totalAmount,
+                                      ),
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w700,
                                         fontSize: 15,

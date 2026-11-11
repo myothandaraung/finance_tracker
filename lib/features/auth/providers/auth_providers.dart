@@ -17,7 +17,10 @@ final authStateProvider = StreamProvider<AuthState>((ref) {
   final repository = ref.watch(authRepositoryProvider);
   return Stream<AuthState>.multi((controller) {
     controller.add(
-      AuthState(AuthChangeEvent.initialSession, repository.client.auth.currentSession),
+      AuthState(
+        AuthChangeEvent.initialSession,
+        repository.client.auth.currentSession,
+      ),
     );
     final subscription = repository.onAuthStateChange.listen(controller.add);
     controller.onCancel = subscription.cancel;

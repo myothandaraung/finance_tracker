@@ -54,15 +54,10 @@ class PeriodSelectorBar extends ConsumerWidget {
       context: context,
       firstDate: DateTime(2020),
       lastDate: DateTime.now().add(const Duration(days: 365)),
-      initialDateRange: DateTimeRange(
-        start: period.from,
-        end: period.to,
-      ),
+      initialDateRange: DateTimeRange(start: period.from, end: period.to),
     );
     if (picked == null) return;
-    ref
-        .read(reportPeriodProvider.notifier)
-        .setRange(picked.start, picked.end);
+    ref.read(reportPeriodProvider.notifier).setRange(picked.start, picked.end);
   }
 
   bool _isSameMonth(DateTime from, DateTime to, DateTime reference) =>

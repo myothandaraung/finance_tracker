@@ -77,16 +77,10 @@ class PaymentRepository extends SupabaseRepository {
     return Money(result['outstanding_cents'] as int? ?? 0);
   }
 
-  Future<void> voidPayment({
-    required String paymentId,
-    String? reason,
-  }) async {
+  Future<void> voidPayment({required String paymentId, String? reason}) async {
     await callRpc(
       'rpc_void_payment',
-      params: {
-        'p_payment_id': paymentId,
-        'p_reason': reason,
-      },
+      params: {'p_payment_id': paymentId, 'p_reason': reason},
     );
   }
 
@@ -97,7 +91,10 @@ class PaymentRepository extends SupabaseRepository {
     DateTime? to,
   }) async {
     try {
-      var query = client.from('payments').select().eq('business_id', businessId);
+      var query = client
+          .from('payments')
+          .select()
+          .eq('business_id', businessId);
       if (from != null) query = query.gte('paid_at', from.toIso8601String());
       if (to != null) query = query.lte('paid_at', to.toIso8601String());
       return await query.order('paid_at', ascending: false);
@@ -113,7 +110,8 @@ class PaymentRepository extends SupabaseRepository {
   }) async {
     try {
       var query = client.from('refunds').select().eq('business_id', businessId);
-      if (from != null) query = query.gte('refunded_at', from.toIso8601String());
+      if (from != null)
+        query = query.gte('refunded_at', from.toIso8601String());
       if (to != null) query = query.lte('refunded_at', to.toIso8601String());
       return await query.order('refunded_at', ascending: false);
     } catch (error) {

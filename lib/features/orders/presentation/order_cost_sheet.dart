@@ -54,7 +54,9 @@ class _OrderCostSheetState extends ConsumerState<OrderCostSheet> {
 
     setState(() => _isSaving = true);
     try {
-      await ref.read(orderRepositoryProvider).addCost(
+      await ref
+          .read(orderRepositoryProvider)
+          .addCost(
             orderId: widget.orderId,
             costType: _costType,
             description: _descriptionController.text.trim(),
@@ -69,7 +71,7 @@ class _OrderCostSheetState extends ConsumerState<OrderCostSheet> {
     } catch (error) {
       if (!mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not add the cost';
       showAppSnackBar(context, message, isError: true);
     } finally {
@@ -126,10 +128,8 @@ class _OrderCostSheetState extends ConsumerState<OrderCostSheet> {
                       ),
                   ],
                   onChanged: (value) {
-                    final matches =
-                        materials.where((item) => item.id == value);
-                    final material =
-                        matches.isEmpty ? null : matches.first;
+                    final matches = materials.where((item) => item.id == value);
+                    final material = matches.isEmpty ? null : matches.first;
                     setState(() {
                       _materialId = value;
                       if (material != null) {
@@ -177,8 +177,9 @@ class _OrderCostSheetState extends ConsumerState<OrderCostSheet> {
                   onPressed: () async {
                     final picked = await showDatePicker(
                       context: context,
-                      firstDate: DateTime.now()
-                          .subtract(const Duration(days: 365)),
+                      firstDate: DateTime.now().subtract(
+                        const Duration(days: 365),
+                      ),
                       lastDate: DateTime.now(),
                       initialDate: _costDate,
                     );

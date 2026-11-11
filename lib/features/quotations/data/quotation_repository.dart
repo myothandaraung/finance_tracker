@@ -10,7 +10,10 @@ class QuotationRepository extends SupabaseRepository {
     String? status,
   }) async {
     try {
-      var query = client.from('quotations').select().eq('business_id', businessId);
+      var query = client
+          .from('quotations')
+          .select()
+          .eq('business_id', businessId);
       if (status != null) query = query.eq('status', status);
       return await query.order('created_at', ascending: false);
     } catch (error) {
@@ -61,10 +64,7 @@ class QuotationRepository extends SupabaseRepository {
   }) async {
     return callRpc(
       'rpc_set_quotation_status',
-      params: {
-        'p_quotation_id': quotationId,
-        'p_status': status,
-      },
+      params: {'p_quotation_id': quotationId, 'p_status': status},
     );
   }
 }

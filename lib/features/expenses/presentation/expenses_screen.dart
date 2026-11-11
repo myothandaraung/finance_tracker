@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/errors/app_exception.dart';
 import '../../../core/money/money.dart';
 import '../../../core/money/money_format.dart';
 import '../../../core/theme/app_colors.dart';
@@ -80,7 +81,8 @@ class ExpensesScreen extends ConsumerWidget {
                       ),
                       subtitle: Text(
                         [
-                          if (expense.categoryName != null) expense.categoryName!,
+                          if (expense.categoryName != null)
+                            expense.categoryName!,
                           AppDate.format(expense.expenseDate),
                           expense.method,
                         ].join(' · '),
@@ -96,7 +98,8 @@ class ExpensesScreen extends ConsumerWidget {
                             IconButton(
                               icon: const Icon(Icons.delete_outline),
                               color: AppColors.danger,
-                              onPressed: () => _delete(context, ref, expense.id),
+                              onPressed: () =>
+                                  _delete(context, ref, expense.id),
                             ),
                         ],
                       ),
@@ -138,7 +141,7 @@ class ExpensesScreen extends ConsumerWidget {
       ref.invalidate(expensesProvider);
     } catch (error) {
       if (!context.mounted) return;
-      showAppSnackBar(context, 'Could not delete the expense', isError: true);
+      showAppSnackBar(context, errorDisplayMessage(error), isError: true);
     }
   }
 }

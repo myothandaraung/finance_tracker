@@ -39,7 +39,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
     setState(() => _isLoading = true);
     try {
-      final hasSession = await ref.read(authRepositoryProvider).signUp(
+      final hasSession = await ref
+          .read(authRepositoryProvider)
+          .signUp(
             email: _emailController.text,
             password: _passwordController.text,
             displayName: _nameController.text,
@@ -58,7 +60,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     } catch (error) {
       if (!mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not create the account. Please try again.';
       showAppSnackBar(context, message, isError: true);
     } finally {
@@ -85,7 +87,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       label: 'Full name',
                       controller: _nameController,
                       textInputAction: TextInputAction.next,
-                      validator: (value) => (value == null || value.trim().isEmpty)
+                      validator: (value) =>
+                          (value == null || value.trim().isEmpty)
                           ? 'Enter your name'
                           : null,
                     ),
@@ -112,11 +115,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           ? 'Use at least 6 characters'
                           : null,
                       suffixIcon: IconButton(
-                        icon: Icon(_obscurePassword
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined),
-                        onPressed: () =>
-                            setState(() => _obscurePassword = !_obscurePassword),
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                        ),
+                        onPressed: () => setState(
+                          () => _obscurePassword = !_obscurePassword,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 14),

@@ -39,8 +39,7 @@ class TeamScreen extends ConsumerWidget {
             return Card(
               child: ListTile(
                 leading: CircleAvatar(
-                  backgroundColor:
-                      AppColors.primary.withValues(alpha: 0.12),
+                  backgroundColor: AppColors.primary.withValues(alpha: 0.12),
                   child: Text(
                     member.displayName.isEmpty
                         ? '?'
@@ -137,18 +136,16 @@ class TeamScreen extends ConsumerWidget {
     if (businessId == null) return;
 
     try {
-      await ref.read(businessRepositoryProvider).inviteMember(
-            businessId: businessId,
-            email: email,
-            role: role.name,
-          );
+      await ref
+          .read(businessRepositoryProvider)
+          .inviteMember(businessId: businessId, email: email, role: role.name);
       ref.invalidate(businessMembersProvider);
       if (!context.mounted) return;
       showAppSnackBar(context, 'Invitation created for $email');
     } catch (error) {
       if (!context.mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not invite the member';
       showAppSnackBar(context, message, isError: true);
     }
@@ -175,21 +172,20 @@ class TeamScreen extends ConsumerWidget {
         ref.invalidate(businessMembersProvider);
       } catch (error) {
         if (!context.mounted) return;
-        showAppSnackBar(context, 'Could not remove the member', isError: true);
+        showAppSnackBar(context, errorDisplayMessage(error), isError: true);
       }
       return;
     }
 
     try {
-      await ref.read(businessRepositoryProvider).updateMemberRole(
-            memberId: member.id,
-            role: action,
-          );
+      await ref
+          .read(businessRepositoryProvider)
+          .updateMemberRole(memberId: member.id, role: action);
       ref.invalidate(businessMembersProvider);
     } catch (error) {
       if (!context.mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not change the role';
       showAppSnackBar(context, message, isError: true);
     }

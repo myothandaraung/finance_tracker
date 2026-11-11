@@ -16,7 +16,8 @@ class BusinessSettingsScreen extends ConsumerStatefulWidget {
       _BusinessSettingsScreenState();
 }
 
-class _BusinessSettingsScreenState extends ConsumerState<BusinessSettingsScreen> {
+class _BusinessSettingsScreenState
+    extends ConsumerState<BusinessSettingsScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _currencyController;
@@ -28,8 +29,9 @@ class _BusinessSettingsScreenState extends ConsumerState<BusinessSettingsScreen>
     super.initState();
     final membership = ref.read(activeMembershipProvider);
     _nameController = TextEditingController(text: membership?.name ?? '');
-    _currencyController =
-        TextEditingController(text: membership?.currencyCode ?? 'MMK');
+    _currencyController = TextEditingController(
+      text: membership?.currencyCode ?? 'MMK',
+    );
   }
 
   @override
@@ -46,7 +48,9 @@ class _BusinessSettingsScreenState extends ConsumerState<BusinessSettingsScreen>
 
     setState(() => _isSaving = true);
     try {
-      await ref.read(businessRepositoryProvider).updateBusiness(
+      await ref
+          .read(businessRepositoryProvider)
+          .updateBusiness(
             businessId: businessId,
             name: _nameController.text.trim(),
             currencyCode: _currencyController.text.trim().toUpperCase(),
@@ -58,7 +62,7 @@ class _BusinessSettingsScreenState extends ConsumerState<BusinessSettingsScreen>
     } catch (error) {
       if (!mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not save the settings';
       showAppSnackBar(context, message, isError: true);
     } finally {

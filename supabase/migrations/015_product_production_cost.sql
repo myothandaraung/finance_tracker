@@ -97,7 +97,12 @@ begin
     end if;
 
     v_old_cost := v_row.production_cost;
-    v_new_cost := public.cents_to_numeric(coalesce(p_production_cost_cents, v_row.production_cost * 100));
+    v_new_cost := public.cents_to_numeric(
+      coalesce(
+        p_production_cost_cents,
+        round(v_row.production_cost * 100)::bigint
+      )
+    );
 
     update public.products
        set name = btrim(p_name),

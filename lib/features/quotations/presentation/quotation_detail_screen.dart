@@ -49,10 +49,7 @@ class QuotationDetailScreen extends ConsumerWidget {
                       value: 'print',
                       child: Text('Print / save as PDF'),
                     ),
-                    PopupMenuItem(
-                      value: 'share',
-                      child: Text('Share PDF'),
-                    ),
+                    PopupMenuItem(value: 'share', child: Text('Share PDF')),
                   ],
                 ),
               ],
@@ -102,8 +99,9 @@ class QuotationDetailScreen extends ConsumerWidget {
                     ),
                     InfoRow(
                       label: 'Valid until',
-                      value:
-                          data.validUntil == null ? '—' : AppDate.format(data.validUntil),
+                      value: data.validUntil == null
+                          ? '—'
+                          : AppDate.format(data.validUntil),
                       icon: Icons.timer_outlined,
                     ),
                     InfoRow(
@@ -178,7 +176,8 @@ class QuotationDetailScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-              if (role.canManageOperations && data.status.allowedNext.isNotEmpty) ...[
+              if (role.canManageOperations &&
+                  data.status.allowedNext.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 for (final status in data.status.allowedNext)
                   Padding(
@@ -203,22 +202,22 @@ class QuotationDetailScreen extends ConsumerWidget {
   }
 
   IconData _iconFor(QuotationStatus status) => switch (status) {
-        QuotationStatus.sent => Icons.send_outlined,
-        QuotationStatus.accepted => Icons.check_circle_outline,
-        QuotationStatus.rejected => Icons.cancel_outlined,
-        QuotationStatus.expired => Icons.timer_off_outlined,
-        QuotationStatus.cancelled => Icons.delete_outline,
-        _ => Icons.arrow_forward,
-      };
+    QuotationStatus.sent => Icons.send_outlined,
+    QuotationStatus.accepted => Icons.check_circle_outline,
+    QuotationStatus.rejected => Icons.cancel_outlined,
+    QuotationStatus.expired => Icons.timer_off_outlined,
+    QuotationStatus.cancelled => Icons.delete_outline,
+    _ => Icons.arrow_forward,
+  };
 
   String _labelFor(QuotationStatus status) => switch (status) {
-        QuotationStatus.sent => 'Mark as sent',
-        QuotationStatus.accepted => 'Mark as accepted',
-        QuotationStatus.rejected => 'Mark as rejected',
-        QuotationStatus.expired => 'Mark as expired',
-        QuotationStatus.cancelled => 'Cancel quotation',
-        _ => status.label,
-      };
+    QuotationStatus.sent => 'Mark as sent',
+    QuotationStatus.accepted => 'Mark as accepted',
+    QuotationStatus.rejected => 'Mark as rejected',
+    QuotationStatus.expired => 'Mark as expired',
+    QuotationStatus.cancelled => 'Cancel quotation',
+    _ => status.label,
+  };
 
   Future<void> _changeStatus(
     BuildContext context,
@@ -226,10 +225,9 @@ class QuotationDetailScreen extends ConsumerWidget {
     QuotationStatus status,
   ) async {
     try {
-      await ref.read(quotationRepositoryProvider).setStatus(
-            quotationId: quotationId,
-            status: status.dbValue,
-          );
+      await ref
+          .read(quotationRepositoryProvider)
+          .setStatus(quotationId: quotationId, status: status.dbValue);
       ref.invalidate(quotationDetailProvider(quotationId));
       ref.invalidate(quotationsProvider);
       if (!context.mounted) return;
@@ -237,7 +235,7 @@ class QuotationDetailScreen extends ConsumerWidget {
     } catch (error) {
       if (!context.mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not update the quotation';
       showAppSnackBar(context, message, isError: true);
     }
@@ -249,7 +247,8 @@ class QuotationDetailScreen extends ConsumerWidget {
     String action,
     Quotation quotation,
   ) async {
-    final businessName = ref.read(activeMembershipProvider)?.name ?? 'MTO Finance';
+    final businessName =
+        ref.read(activeMembershipProvider)?.name ?? 'MTO Finance';
     try {
       final bytes = await DocumentPdf.buildQuotation(
         businessName: businessName,
@@ -264,7 +263,7 @@ class QuotationDetailScreen extends ConsumerWidget {
       }
     } catch (error) {
       if (!context.mounted) return;
-      showAppSnackBar(context, 'Could not create the PDF', isError: true);
+      showAppSnackBar(context, errorDisplayMessage(error), isError: true);
     }
   }
 }

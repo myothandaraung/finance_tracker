@@ -39,7 +39,8 @@ class MaterialListScreen extends ConsumerWidget {
           if (items.isEmpty) {
             return EmptyState(
               title: 'No materials yet',
-              message: 'Add the materials you use in production to cost an order.',
+              message:
+                  'Add the materials you use in production to cost an order.',
               icon: Icons.construction_outlined,
               action: role.canManageOperations
                   ? FilledButton.icon(
@@ -144,7 +145,9 @@ class _MaterialFormState extends ConsumerState<_MaterialForm> {
 
     setState(() => _isSaving = true);
     try {
-      await ref.read(materialRepositoryProvider).saveMaterial(
+      await ref
+          .read(materialRepositoryProvider)
+          .saveMaterial(
             businessId: businessId,
             materialId: widget.material?.id,
             name: _nameController.text.trim(),
@@ -158,7 +161,7 @@ class _MaterialFormState extends ConsumerState<_MaterialForm> {
     } catch (error) {
       if (!mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not save the material';
       showAppSnackBar(context, message, isError: true);
     } finally {
@@ -184,7 +187,10 @@ class _MaterialFormState extends ConsumerState<_MaterialForm> {
             children: [
               Text(
                 widget.material == null ? 'New material' : 'Edit material',
-                style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: 18),
               AppTextField(

@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mto_finance/core/domain/order_status.dart';
 import 'package:mto_finance/core/money/document_totals.dart';
 import 'package:mto_finance/core/money/money.dart';
+import 'package:mto_finance/features/business/providers/business_providers.dart';
 import 'package:mto_finance/shared/widgets/document_editor.dart';
 import 'package:mto_finance/shared/widgets/status_chip.dart';
 
 void main() {
   testWidgets('the status chip shows the label of the status', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(body: StatusChip.order(OrderStatus.inProgress)),
+      ProviderScope(
+        child: MaterialApp(
+          home: Scaffold(body: StatusChip.order(OrderStatus.inProgress)),
+        ),
       ),
     );
 
@@ -27,12 +31,17 @@ void main() {
     );
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: TotalsPanel(
-            totals: totals,
-            discountType: 'percent',
-            discountValue: 10,
+      ProviderScope(
+        overrides: [
+          activeCurrencySymbolProvider.overrideWithValue('Ks'),
+        ],
+        child: MaterialApp(
+          home: Scaffold(
+            body: TotalsPanel(
+              totals: totals,
+              discountType: 'percent',
+              discountValue: 10,
+            ),
           ),
         ),
       ),
@@ -51,20 +60,25 @@ void main() {
     ];
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: StatefulBuilder(
-          builder: (context, setState) => Scaffold(
-            body: LineEditor(
-              lines: lines,
-              products: const [
-                (
-                  id: 'cake',
-                  name: 'Birthday cake',
-                  price: Money(2000000),
-                  productionCost: Money(1700000),
-                ),
-              ],
-              onChanged: (value) => setState(() => lines = value),
+      ProviderScope(
+        overrides: [
+          activeCurrencySymbolProvider.overrideWithValue('Ks'),
+        ],
+        child: MaterialApp(
+          home: StatefulBuilder(
+            builder: (context, setState) => Scaffold(
+              body: LineEditor(
+                lines: lines,
+                products: const [
+                  (
+                    id: 'cake',
+                    name: 'Birthday cake',
+                    price: Money(2000000),
+                    productionCost: Money(1700000),
+                  ),
+                ],
+                onChanged: (value) => setState(() => lines = value),
+              ),
             ),
           ),
         ),
@@ -93,14 +107,19 @@ void main() {
     );
 
     await tester.pumpWidget(
-      MaterialApp(
-        home: StatefulBuilder(
-          builder: (context, setState) {
-            update = setState;
-            return Scaffold(
-              body: LineEditor(lines: [line], onChanged: (_) {}),
-            );
-          },
+      ProviderScope(
+        overrides: [
+          activeCurrencySymbolProvider.overrideWithValue('Ks'),
+        ],
+        child: MaterialApp(
+          home: StatefulBuilder(
+            builder: (context, setState) {
+              update = setState;
+              return Scaffold(
+                body: LineEditor(lines: [line], onChanged: (_) {}),
+              );
+            },
+          ),
         ),
       ),
     );

@@ -90,7 +90,7 @@ class _QuotationFormScreenState extends ConsumerState<QuotationFormScreen> {
       if (!mounted) return;
       setState(() => _loading = false);
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not load the quotation';
       showAppSnackBar(context, message, isError: true);
     }
@@ -154,7 +154,7 @@ class _QuotationFormScreenState extends ConsumerState<QuotationFormScreen> {
     } catch (error) {
       if (!mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not save the quotation';
       showAppSnackBar(context, message, isError: true);
     } finally {

@@ -28,8 +28,9 @@ final expensesProvider = FutureProvider<List<Expense>>((ref) async {
       .toList(growable: false);
 });
 
-final expenseCategoriesProvider =
-    FutureProvider<List<ExpenseCategory>>((ref) async {
+final expenseCategoriesProvider = FutureProvider<List<ExpenseCategory>>((
+  ref,
+) async {
   final businessId = ref.watch(activeBusinessIdProvider);
   if (businessId == null) return const [];
   return ref.watch(expenseRepositoryProvider).listCategories(businessId);

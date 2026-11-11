@@ -49,7 +49,8 @@ class BusinessMember {
       id: json['id'] as String,
       userId: json['user_id'] as String?,
       email: (json['email'] as String?) ?? '',
-      displayName: (json['display_name'] as String?) ?? (json['email'] as String? ?? ''),
+      displayName:
+          (json['display_name'] as String?) ?? (json['email'] as String? ?? ''),
       role: MemberRole.fromDb(json['role'] as String?),
       status: (json['status'] as String?) ?? 'invited',
     );

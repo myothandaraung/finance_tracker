@@ -126,8 +126,9 @@ class _ProductFormState extends ConsumerState<_ProductForm> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.product?.name ?? '');
-    _descriptionController =
-        TextEditingController(text: widget.product?.description ?? '');
+    _descriptionController = TextEditingController(
+      text: widget.product?.description ?? '',
+    );
     _priceController = TextEditingController(
       text: widget.product?.basePrice.plain ?? '',
     );
@@ -155,7 +156,9 @@ class _ProductFormState extends ConsumerState<_ProductForm> {
 
     setState(() => _isSaving = true);
     try {
-      await ref.read(productRepositoryProvider).saveProduct(
+      await ref
+          .read(productRepositoryProvider)
+          .saveProduct(
             businessId: businessId,
             productId: widget.product?.id,
             name: _nameController.text.trim(),
@@ -163,8 +166,7 @@ class _ProductFormState extends ConsumerState<_ProductForm> {
             basePrice: Money.tryParse(_priceController.text) ?? Money.zero,
             unit: _unitController.text.trim(),
             isActive: _isActive,
-            productionCost:
-                Money.tryParse(_costController.text) ?? Money.zero,
+            productionCost: Money.tryParse(_costController.text) ?? Money.zero,
           );
       if (!mounted) return;
       showAppSnackBar(context, 'Product saved');
@@ -172,7 +174,7 @@ class _ProductFormState extends ConsumerState<_ProductForm> {
     } catch (error) {
       if (!mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not save the product';
       showAppSnackBar(context, message, isError: true);
     } finally {
@@ -198,7 +200,10 @@ class _ProductFormState extends ConsumerState<_ProductForm> {
             children: [
               Text(
                 widget.product == null ? 'New product' : 'Edit product',
-                style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: 18),
               AppTextField(
@@ -209,10 +214,7 @@ class _ProductFormState extends ConsumerState<_ProductForm> {
                     : null,
               ),
               const SizedBox(height: 12),
-              AmountField(
-                label: 'Base price',
-                controller: _priceController,
-              ),
+              AmountField(label: 'Base price', controller: _priceController),
               const SizedBox(height: 12),
               AmountField(
                 label: 'Production cost / unit',

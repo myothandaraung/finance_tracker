@@ -19,8 +19,9 @@ class ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appError =
-        error is AppException ? error as AppException : AppException(error.toString());
+    final appError = error is AppException
+        ? error as AppException
+        : AppException(error.toString());
 
     final isPermission = appError.isPermissionDenied;
 
@@ -46,7 +47,7 @@ class ErrorView extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              appError.message,
+              appError.displayMessage,
               textAlign: TextAlign.center,
               style: const TextStyle(color: AppColors.textSecondary),
             ),

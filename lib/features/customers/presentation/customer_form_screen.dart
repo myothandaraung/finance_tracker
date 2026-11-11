@@ -65,7 +65,9 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
 
     setState(() => _isSaving = true);
     try {
-      await ref.read(customerRepositoryProvider).saveCustomer(
+      await ref
+          .read(customerRepositoryProvider)
+          .saveCustomer(
             businessId: businessId,
             customerId: widget.customerId,
             name: _nameController.text.trim(),
@@ -87,7 +89,7 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
     } catch (error) {
       if (!mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not save the customer';
       showAppSnackBar(context, message, isError: true);
     } finally {
@@ -99,7 +101,9 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.customerId == null ? 'New customer' : 'Edit customer'),
+        title: Text(
+          widget.customerId == null ? 'New customer' : 'Edit customer',
+        ),
       ),
       body: Form(
         key: _formKey,

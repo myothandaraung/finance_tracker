@@ -48,7 +48,9 @@ class ProfitabilityReportScreen extends ConsumerWidget {
                         Expanded(
                           child: MetricCard(
                             label: 'Estimated cost',
-                            value: MoneyFormatter.format(data.estimatedProductionCost),
+                            value: MoneyFormatter.format(
+                              data.estimatedProductionCost,
+                            ),
                             icon: Icons.precision_manufacturing_outlined,
                             color: AppColors.accent,
                           ),

@@ -37,8 +37,7 @@ class Product {
       unit: json['unit'] as String?,
       imagePath: json['image_path'] as String?,
       isActive: (json['is_active'] as bool?) ?? true,
-      productionCost:
-          Money(json['production_cost_cents'] as int? ?? 0),
+      productionCost: Money(json['production_cost_cents'] as int? ?? 0),
     );
   }
 

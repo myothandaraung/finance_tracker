@@ -18,7 +18,9 @@ final paymentsLedgerProvider = FutureProvider<List<PaymentEntry>>((ref) async {
   final repository = ref.watch(paymentRepositoryProvider);
   final rows = await repository.listPaymentRows(businessId);
 
-  final orderRows = await ref.watch(orderRepositoryProvider).listOrderRows(businessId);
+  final orderRows = await ref
+      .watch(orderRepositoryProvider)
+      .listOrderRows(businessId);
   final orderNumbers = {
     for (final row in orderRows) row['id'] as String: row['order_no'] as String,
   };
@@ -36,17 +38,17 @@ final refundsLedgerProvider = FutureProvider<List<PaymentEntry>>((ref) async {
   final repository = ref.watch(paymentRepositoryProvider);
   final rows = await repository.listRefundRows(businessId);
 
-  final orderRows = await ref.watch(orderRepositoryProvider).listOrderRows(businessId);
+  final orderRows = await ref
+      .watch(orderRepositoryProvider)
+      .listOrderRows(businessId);
   final orderNumbers = {
     for (final row in orderRows) row['id'] as String: row['order_no'] as String,
   };
 
   return rows
       .map(
-        (row) => PaymentEntry.fromRefundJson(
-          row,
-          orderNumbers[row['order_id']],
-        ),
+        (row) =>
+            PaymentEntry.fromRefundJson(row, orderNumbers[row['order_id']]),
       )
       .toList(growable: false);
 });

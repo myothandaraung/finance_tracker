@@ -17,7 +17,10 @@ final customersProvider = FutureProvider<List<Customer>>((ref) async {
 });
 
 /// A single customer.
-final customerProvider = FutureProvider.family<Customer?, String>((ref, id) async {
+final customerProvider = FutureProvider.family<Customer?, String>((
+  ref,
+  id,
+) async {
   final businessId = ref.watch(activeBusinessIdProvider);
   if (businessId == null) return null;
   return ref.watch(customerRepositoryProvider).findCustomer(businessId, id);

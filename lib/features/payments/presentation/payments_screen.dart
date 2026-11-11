@@ -33,8 +33,10 @@ class PaymentsScreen extends ConsumerWidget {
           final collected = entries
               .where((entry) => entry.status == 'successful')
               .fold<int>(0, (sum, entry) => sum + entry.amount.cents);
-          final refunded = refundEntries
-              .fold<int>(0, (sum, entry) => sum + entry.amount.cents);
+          final refunded = refundEntries.fold<int>(
+            0,
+            (sum, entry) => sum + entry.amount.cents,
+          );
 
           if (entries.isEmpty && refundEntries.isEmpty) {
             return const EmptyState(

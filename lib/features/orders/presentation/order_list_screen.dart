@@ -116,7 +116,8 @@ class _OrderListScreenState extends ConsumerState<OrderListScreen> {
                   separatorBuilder: (_, _) => const SizedBox(height: 8),
                   itemBuilder: (context, index) {
                     final order = items[index];
-                    final isOverdue = order.dueDate != null &&
+                    final isOverdue =
+                        order.dueDate != null &&
                         order.dueDate!.isBefore(DateTime.now()) &&
                         !order.status.isTerminal &&
                         order.status != OrderStatus.delivered;

@@ -35,7 +35,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
     setState(() => _isLoading = true);
     try {
-      await ref.read(authRepositoryProvider).signIn(
+      await ref
+          .read(authRepositoryProvider)
+          .signIn(
             email: _emailController.text,
             password: _passwordController.text,
           );
@@ -43,7 +45,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     } catch (error) {
       if (!mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not sign in. Please try again.';
       showAppSnackBar(context, message, isError: true);
     } finally {
@@ -70,9 +72,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     Text(
                       'MTO Finance',
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.w700),
                     ),
                     const SizedBox(height: 6),
                     const Text(
@@ -94,15 +95,19 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       obscureText: _obscurePassword,
                       textInputAction: TextInputAction.done,
                       autofillHints: const [AutofillHints.password],
-                      validator: (value) =>
-                          (value == null || value.isEmpty) ? 'Enter your password' : null,
+                      validator: (value) => (value == null || value.isEmpty)
+                          ? 'Enter your password'
+                          : null,
                       onSubmitted: (_) => _signIn(),
                       suffixIcon: IconButton(
-                        icon: Icon(_obscurePassword
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined),
-                        onPressed: () =>
-                            setState(() => _obscurePassword = !_obscurePassword),
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                        ),
+                        onPressed: () => setState(
+                          () => _obscurePassword = !_obscurePassword,
+                        ),
                       ),
                     ),
                     Align(

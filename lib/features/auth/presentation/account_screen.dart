@@ -24,7 +24,10 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(
-      text: ref.read(currentUserProvider)?.userMetadata?['display_name'] as String? ?? '',
+      text:
+          ref.read(currentUserProvider)?.userMetadata?['display_name']
+              as String? ??
+          '',
     );
   }
 
@@ -37,15 +40,15 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   Future<void> _saveProfile() async {
     setState(() => _isSaving = true);
     try {
-      await ref.read(authRepositoryProvider).updateProfile(
-            displayName: _nameController.text.trim(),
-          );
+      await ref
+          .read(authRepositoryProvider)
+          .updateProfile(displayName: _nameController.text.trim());
       if (!mounted) return;
       showAppSnackBar(context, 'Profile updated');
     } catch (error) {
       if (!mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not update the profile';
       showAppSnackBar(context, message, isError: true);
     } finally {
@@ -101,9 +104,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.business_outlined),
               title: const Text('Business'),
-              subtitle: Text(
-                '${membership.name} · ${membership.role.label}',
-              ),
+              subtitle: Text('${membership.name} · ${membership.role.label}'),
             ),
           const SizedBox(height: 18),
           AppButton(

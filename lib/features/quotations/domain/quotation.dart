@@ -38,13 +38,13 @@ class QuotationItem {
 
   /// Payload used when saving a quotation or an order.
   Map<String, dynamic> toRpcPayload() => {
-        'product_id': productId,
-        'description': description,
-        'quantity': quantity,
-        'unit_price_cents': unitPrice.cents,
-        'estimated_cost_cents': estimatedCost.cents,
-        'position': position,
-      };
+    'product_id': productId,
+    'description': description,
+    'quantity': quantity,
+    'unit_price_cents': unitPrice.cents,
+    'estimated_cost_cents': estimatedCost.cents,
+    'position': position,
+  };
 }
 
 /// A quotation sent to a customer.

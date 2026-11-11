@@ -2,8 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/domain/member_role.dart';
+import '../../../core/money/currency.dart';
 import '../../auth/providers/auth_providers.dart';
-import '../data/business_repository.dart';
+import '../data/business_repository.dart'
+    show BusinessRepository;
 import '../domain/business_membership.dart';
 
 final businessRepositoryProvider = Provider<BusinessRepository>((ref) {
@@ -18,9 +20,7 @@ class MembershipsNotifier extends AsyncNotifier<List<BusinessMembership>> {
     if (session == null) return const [];
     final repository = ref.watch(businessRepositoryProvider);
     final rows = await repository.callRpcList('rpc_my_memberships');
-    return rows
-        .map(BusinessMembership.fromJson)
-        .toList(growable: false);
+    return rows.map(BusinessMembership.fromJson).toList(growable: false);
   }
 
   Future<void> refresh() async {
@@ -31,8 +31,8 @@ class MembershipsNotifier extends AsyncNotifier<List<BusinessMembership>> {
 
 final membershipsProvider =
     AsyncNotifierProvider<MembershipsNotifier, List<BusinessMembership>>(
-  MembershipsNotifier.new,
-);
+      MembershipsNotifier.new,
+    );
 
 /// The business the app is currently working in.
 class ActiveBusinessNotifier extends Notifier<String?> {
@@ -58,7 +58,9 @@ class ActiveBusinessNotifier extends Notifier<String?> {
 }
 
 final activeBusinessIdProvider =
-    NotifierProvider<ActiveBusinessNotifier, String?>(ActiveBusinessNotifier.new);
+    NotifierProvider<ActiveBusinessNotifier, String?>(
+      ActiveBusinessNotifier.new,
+    );
 
 /// Membership of the active business, `null` while it is still loading.
 final activeMembershipProvider = Provider<BusinessMembership?>((ref) {
@@ -78,7 +80,9 @@ final currentRoleProvider = Provider<MemberRole>((ref) {
 });
 
 /// Team members of the active business.
-final businessMembersProvider = FutureProvider<List<BusinessMember>>((ref) async {
+final businessMembersProvider = FutureProvider<List<BusinessMember>>((
+  ref,
+) async {
   final businessId = ref.watch(activeBusinessIdProvider);
   if (businessId == null) return const [];
 
@@ -88,4 +92,10 @@ final businessMembersProvider = FutureProvider<List<BusinessMember>>((ref) async
     params: {'p_business_id': businessId},
   );
   return rows.map(BusinessMember.fromJson).toList(growable: false);
+});
+
+/// Currency symbol of the active business (e.g., 'Ks', '₱', '\$', '€').
+final activeCurrencySymbolProvider = Provider<String>((ref) {
+  final membership = ref.watch(activeMembershipProvider);
+  return currencySymbol(membership?.currencyCode);
 });

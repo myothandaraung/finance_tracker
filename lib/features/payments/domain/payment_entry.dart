@@ -30,18 +30,15 @@ class PaymentEntry {
 
   /// Human label of the payment type.
   String get kindLabel => switch (kind) {
-        'deposit' => 'Deposit',
-        'installment' => 'Installment',
-        'final' => 'Final payment',
-        'adjustment' => 'Adjustment',
-        'refund' => 'Refund',
-        _ => kind,
-      };
+    'deposit' => 'Deposit',
+    'installment' => 'Installment',
+    'final' => 'Final payment',
+    'adjustment' => 'Adjustment',
+    'refund' => 'Refund',
+    _ => kind,
+  };
 
-  factory PaymentEntry.fromJson(
-    Map<String, dynamic> json, [
-    String? orderNo,
-  ]) {
+  factory PaymentEntry.fromJson(Map<String, dynamic> json, [String? orderNo]) {
     return PaymentEntry(
       id: json['id'] as String,
       orderId: (json['order_id'] as String?) ?? '',

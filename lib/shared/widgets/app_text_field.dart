@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/money/money.dart';
+import '../../features/business/providers/business_providers.dart';
 
 /// Text field with a label, optional prefix and validation support.
 class AppTextField extends StatelessWidget {
@@ -74,7 +76,7 @@ class AppTextField extends StatelessWidget {
 }
 
 /// Money input. Accepts `1234.50` and renders the parsed value.
-class AmountField extends StatelessWidget {
+class AmountField extends ConsumerWidget {
   const AmountField({
     super.key,
     required this.label,
@@ -84,7 +86,7 @@ class AmountField extends StatelessWidget {
     this.onChanged,
     this.validator,
     this.autofocus = false,
-    this.currencySymbol = '₱',
+    this.currencySymbol,
   });
 
   final String label;
@@ -94,10 +96,11 @@ class AmountField extends StatelessWidget {
   final ValueChanged<Money?>? onChanged;
   final String? Function(String?)? validator;
   final bool autofocus;
-  final String currencySymbol;
+  final String? currencySymbol;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final symbol = currencySymbol ?? ref.watch(activeCurrencySymbolProvider);
     return TextFormField(
       controller: controller,
       enabled: enabled,
@@ -117,7 +120,7 @@ class AmountField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        prefixText: '$currencySymbol ',
+        prefixText: '$symbol ',
       ),
     );
   }

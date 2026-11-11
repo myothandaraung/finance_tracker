@@ -537,7 +537,7 @@ class OrderDetailScreen extends ConsumerWidget {
     } catch (error) {
       if (!context.mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not update the order';
       showAppSnackBar(context, message, isError: true);
     }
@@ -597,7 +597,7 @@ class OrderDetailScreen extends ConsumerWidget {
     } catch (error) {
       if (!context.mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not delete the cost';
       showAppSnackBar(context, message, isError: true);
     }
@@ -633,7 +633,7 @@ class OrderDetailScreen extends ConsumerWidget {
     } catch (error) {
       if (!context.mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not void the payment';
       showAppSnackBar(context, message, isError: true);
     }
@@ -689,7 +689,7 @@ class OrderDetailScreen extends ConsumerWidget {
     } catch (error) {
       if (!context.mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not record the refund';
       showAppSnackBar(context, message, isError: true);
     }
@@ -717,7 +717,7 @@ class OrderDetailScreen extends ConsumerWidget {
       }
     } catch (error) {
       if (!context.mounted) return;
-      showAppSnackBar(context, 'Could not create the PDF', isError: true);
+      showAppSnackBar(context, errorDisplayMessage(error), isError: true);
     }
   }
 }

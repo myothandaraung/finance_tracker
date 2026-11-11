@@ -84,7 +84,8 @@ class _PaymentSheetState extends ConsumerState<PaymentSheet> {
     try {
       final bytes = await image.readAsBytes();
       final extension = image.path.split('.').last;
-      final path = '${widget.businessId}/${widget.orderId}/'
+      final path =
+          '${widget.businessId}/${widget.orderId}/'
           '${DateTime.now().millisecondsSinceEpoch}.$extension';
 
       await Supabase.instance.client.storage
@@ -104,7 +105,7 @@ class _PaymentSheetState extends ConsumerState<PaymentSheet> {
     } catch (error) {
       if (!mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not upload the receipt';
       showAppSnackBar(context, message, isError: true);
     } finally {
@@ -137,7 +138,9 @@ class _PaymentSheetState extends ConsumerState<PaymentSheet> {
 
     setState(() => _isSaving = true);
     try {
-      final result = await ref.read(paymentRepositoryProvider).recordPayment(
+      final result = await ref
+          .read(paymentRepositoryProvider)
+          .recordPayment(
             orderId: widget.orderId,
             amount: amount,
             kind: _kind,
@@ -160,7 +163,7 @@ class _PaymentSheetState extends ConsumerState<PaymentSheet> {
     } catch (error) {
       if (!mounted) return;
       final message = error is AppException
-          ? error.message
+          ? error.displayMessage
           : 'Could not record the payment';
       showAppSnackBar(context, message, isError: true);
     } finally {
@@ -204,7 +207,8 @@ class _PaymentSheetState extends ConsumerState<PaymentSheet> {
                   for (final kind in _kinds)
                     DropdownMenuItem(value: kind.$1, child: Text(kind.$2)),
                 ],
-                onChanged: (value) => setState(() => _kind = value ?? 'installment'),
+                onChanged: (value) =>
+                    setState(() => _kind = value ?? 'installment'),
               ),
               const SizedBox(height: 12),
               AmountField(
@@ -219,7 +223,10 @@ class _PaymentSheetState extends ConsumerState<PaymentSheet> {
                 decoration: const InputDecoration(labelText: 'Method'),
                 items: [
                   const DropdownMenuItem(value: 'cash', child: Text('Cash')),
-                  const DropdownMenuItem(value: 'bank', child: Text('Bank transfer')),
+                  const DropdownMenuItem(
+                    value: 'bank',
+                    child: Text('Bank transfer'),
+                  ),
                   for (final method in methods)
                     DropdownMenuItem(
                       value: method.name,
@@ -238,7 +245,9 @@ class _PaymentSheetState extends ConsumerState<PaymentSheet> {
                   onPressed: () async {
                     final date = await showDatePicker(
                       context: context,
-                      firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                      firstDate: DateTime.now().subtract(
+                        const Duration(days: 365),
+                      ),
                       lastDate: DateTime.now(),
                       initialDate: _paidAt,
                     );

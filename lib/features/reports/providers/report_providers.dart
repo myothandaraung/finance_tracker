@@ -40,7 +40,10 @@ class ReportPeriodNotifier extends Notifier<ReportPeriod> {
 
   void thisMonth() {
     final now = DateTime.now();
-    setRange(DateTime(now.year, now.month, 1), DateTime(now.year, now.month + 1, 0));
+    setRange(
+      DateTime(now.year, now.month, 1),
+      DateTime(now.year, now.month + 1, 0),
+    );
   }
 
   void lastMonth() {
@@ -53,19 +56,26 @@ class ReportPeriodNotifier extends Notifier<ReportPeriod> {
 
   void last12Months() {
     final now = DateTime.now();
-    setRange(DateTime(now.year - 1, now.month, 1), DateTime(now.year, now.month + 1, 0));
+    setRange(
+      DateTime(now.year - 1, now.month, 1),
+      DateTime(now.year, now.month + 1, 0),
+    );
   }
 }
 
 final reportPeriodProvider =
-    NotifierProvider<ReportPeriodNotifier, ReportPeriod>(ReportPeriodNotifier.new);
+    NotifierProvider<ReportPeriodNotifier, ReportPeriod>(
+      ReportPeriodNotifier.new,
+    );
 
 final dashboardSummaryProvider = FutureProvider<DashboardSummary>((ref) async {
   final businessId = ref.watch(activeBusinessIdProvider);
   if (businessId == null) throw StateError('No business selected');
 
   final period = ref.watch(reportPeriodProvider);
-  return ref.watch(reportRepositoryProvider).dashboardSummary(
+  return ref
+      .watch(reportRepositoryProvider)
+      .dashboardSummary(
         businessId: businessId,
         from: period.from,
         to: period.to,
@@ -77,32 +87,32 @@ final salesSummaryProvider = FutureProvider<SalesSummary>((ref) async {
   if (businessId == null) throw StateError('No business selected');
 
   final period = ref.watch(reportPeriodProvider);
-  return ref.watch(reportRepositoryProvider).salesSummary(
-        businessId: businessId,
-        from: period.from,
-        to: period.to,
-      );
+  return ref
+      .watch(reportRepositoryProvider)
+      .salesSummary(businessId: businessId, from: period.from, to: period.to);
 });
 
-final profitabilityReportProvider =
-    FutureProvider<ProfitabilityReport>((ref) async {
+final profitabilityReportProvider = FutureProvider<ProfitabilityReport>((
+  ref,
+) async {
   final businessId = ref.watch(activeBusinessIdProvider);
   if (businessId == null) throw StateError('No business selected');
 
   final period = ref.watch(reportPeriodProvider);
-  return ref.watch(reportRepositoryProvider).profitability(
-        businessId: businessId,
-        from: period.from,
-        to: period.to,
-      );
+  return ref
+      .watch(reportRepositoryProvider)
+      .profitability(businessId: businessId, from: period.from, to: period.to);
 });
 
-final receivablesReportProvider =
-    FutureProvider<ReceivablesReport>((ref) async {
+final receivablesReportProvider = FutureProvider<ReceivablesReport>((
+  ref,
+) async {
   final businessId = ref.watch(activeBusinessIdProvider);
   if (businessId == null) throw StateError('No business selected');
 
-  return ref.watch(reportRepositoryProvider).receivables(businessId: businessId);
+  return ref
+      .watch(reportRepositoryProvider)
+      .receivables(businessId: businessId);
 });
 
 final monthlyTrendsProvider = FutureProvider<List<MonthPoint>>((ref) async {
@@ -110,9 +120,7 @@ final monthlyTrendsProvider = FutureProvider<List<MonthPoint>>((ref) async {
   if (businessId == null) throw StateError('No business selected');
 
   final period = ref.watch(reportPeriodProvider);
-  return ref.watch(reportRepositoryProvider).monthlyTrends(
-        businessId: businessId,
-        from: period.from,
-        to: period.to,
-      );
+  return ref
+      .watch(reportRepositoryProvider)
+      .monthlyTrends(businessId: businessId, from: period.from, to: period.to);
 });

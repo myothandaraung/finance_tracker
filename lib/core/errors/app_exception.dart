@@ -4,17 +4,28 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 /// [statusCode] returned by the API so the UI can react differently to a
 /// permission problem, a duplicate key and a validation error.
 class AppException implements Exception {
-  const AppException(
-    this.message, {
-    this.code,
-    this.statusCode,
-    this.details,
-  });
+  const AppException(this.message, {this.code, this.statusCode, this.details});
 
   final String message;
   final String? code;
   final int? statusCode;
   final Object? details;
+
+  /// A user-facing message that preserves useful API diagnostics without
+  /// exposing the verbose exception wrapper produced by the SDK.
+  String get displayMessage {
+    final parts = <String>[message.trim()];
+    final detailText = _formatDetails(details);
+    if (detailText != null &&
+        detailText.isNotEmpty &&
+        detailText.toLowerCase() != message.trim().toLowerCase()) {
+      parts.add(detailText);
+    }
+    if (code != null && code!.trim().isNotEmpty) {
+      parts.add('Error code: ${code!.trim()}');
+    }
+    return parts.where((part) => part.isNotEmpty).join('\n');
+  }
 
   /// Row Level Security rejected the statement (Postgres 42501).
   bool get isPermissionDenied => statusCode == 403 || code == '42501';
@@ -39,10 +50,7 @@ class AppException implements Exception {
       );
     }
     if (error is AuthException) {
-      return AppException(
-        error.message,
-        code: error.code,
-      );
+      return AppException(error.message, code: error.code);
     }
     if (error is StorageException) {
       return AppException(
@@ -56,4 +64,24 @@ class AppException implements Exception {
 
   @override
   String toString() => message;
+
+  static String? _formatDetails(Object? value) {
+    if (value == null) return null;
+    if (value is String) {
+      final text = value.trim();
+      if (text.isEmpty || text.toLowerCase() == 'null') return null;
+      return text;
+    }
+    if (value is Map) {
+      return value.entries
+          .where((entry) => entry.value != null)
+          .map((entry) => '${entry.key}: ${entry.value}')
+          .join('\n');
+    }
+    return value.toString();
+  }
 }
+
+/// Converts any caught error to the same detailed message used by error pages.
+String errorDisplayMessage(Object error) =>
+    AppException.fromSupabase(error).displayMessage;

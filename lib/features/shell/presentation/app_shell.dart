@@ -53,11 +53,7 @@ const List<ShellDestination> shellDestinations = [
 
 /// Bottom navigation shell. Every main screen lives inside this shell.
 class AppShell extends StatelessWidget {
-  const AppShell({
-    super.key,
-    required this.location,
-    required this.child,
-  });
+  const AppShell({super.key, required this.location, required this.child});
 
   final String location;
   final Widget child;

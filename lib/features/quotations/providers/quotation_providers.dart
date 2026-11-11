@@ -17,7 +17,11 @@ class QuotationFilter {
   final String? status;
   final String search;
 
-  QuotationFilter copyWith({String? status, bool clearStatus = false, String? search}) {
+  QuotationFilter copyWith({
+    String? status,
+    bool clearStatus = false,
+    String? search,
+  }) {
     return QuotationFilter(
       status: clearStatus ? null : (status ?? this.status),
       search: search ?? this.search,
@@ -40,8 +44,8 @@ class QuotationFilterNotifier extends Notifier<QuotationFilter> {
 
 final quotationFilterProvider =
     NotifierProvider<QuotationFilterNotifier, QuotationFilter>(
-  QuotationFilterNotifier.new,
-);
+      QuotationFilterNotifier.new,
+    );
 
 /// Quotations of the active business, filtered.
 final quotationsProvider = FutureProvider<List<Quotation>>((ref) async {
@@ -55,7 +59,9 @@ final quotationsProvider = FutureProvider<List<Quotation>>((ref) async {
     status: filter.status,
   );
 
-  final customers = await ref.watch(customerRepositoryProvider).listCustomers(businessId);
+  final customers = await ref
+      .watch(customerRepositoryProvider)
+      .listCustomers(businessId);
   final names = {for (final customer in customers) customer.id: customer.name};
 
   final quotations = rows
@@ -80,8 +86,10 @@ final quotationsProvider = FutureProvider<List<Quotation>>((ref) async {
 });
 
 /// A quotation with its line items.
-final quotationDetailProvider =
-    FutureProvider.family<Quotation, String>((ref, quotationId) async {
+final quotationDetailProvider = FutureProvider.family<Quotation, String>((
+  ref,
+  quotationId,
+) async {
   final businessId = ref.watch(activeBusinessIdProvider);
   if (businessId == null) {
     throw StateError('No business selected');
