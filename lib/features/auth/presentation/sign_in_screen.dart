@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/errors/app_exception.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
 import '../../../shared/widgets/dialogs.dart';
@@ -114,7 +115,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () => context.go('/forgot-password'),
-                        child: const Text('Forgot password?'),
+                        child: Text(context.l10n.translate('Forgot password?')),
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -128,10 +129,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('No account yet?'),
+                        Text(context.l10n.translate('No account yet?')),
                         TextButton(
                           onPressed: () => context.go('/sign-up'),
-                          child: const Text('Create one'),
+                          child: Text(context.l10n.translate('Create one')),
                         ),
                       ],
                     ),

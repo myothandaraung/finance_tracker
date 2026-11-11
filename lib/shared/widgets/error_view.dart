@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/errors/app_exception.dart';
+import '../../core/localization/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 
 /// Error state with a retry action. Permission errors and empty states are
@@ -38,7 +39,9 @@ class ErrorView extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              isPermission ? 'Permission denied' : 'Something went wrong',
+              context.l10n.translate(
+                isPermission ? 'Permission denied' : 'Something went wrong',
+              ),
               style: const TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 15,
@@ -56,7 +59,7 @@ class ErrorView extends StatelessWidget {
               OutlinedButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh),
-                label: const Text('Try again'),
+                label: Text(context.l10n.translate('Try again')),
               ),
             ],
           ],

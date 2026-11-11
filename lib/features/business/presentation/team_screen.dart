@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/domain/member_role.dart';
 import '../../../core/errors/app_exception.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/app_text_field.dart';
 import '../../../shared/widgets/dialogs.dart';
@@ -19,7 +20,7 @@ class TeamScreen extends ConsumerWidget {
     final members = ref.watch(businessMembersProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Team')),
+      appBar: AppBar(title: Text(context.l10n.translate('Team'))),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _invite(context, ref),
         child: const Icon(Icons.person_add_alt),
@@ -60,7 +61,10 @@ class TeamScreen extends ConsumerWidget {
                   itemBuilder: (context) => [
                     for (final role in MemberRole.values)
                       PopupMenuItem(value: role.name, child: Text(role.label)),
-                    const PopupMenuItem(value: 'remove', child: Text('Remove')),
+                    PopupMenuItem(
+                      value: 'remove',
+                      child: Text(context.l10n.translate('Remove')),
+                    ),
                   ],
                 ),
               ),
@@ -79,7 +83,7 @@ class TeamScreen extends ConsumerWidget {
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Invite a team member'),
+          title: Text(context.l10n.translate('Invite a team member')),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -92,7 +96,9 @@ class TeamScreen extends ConsumerWidget {
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
                 initialValue: role.name,
-                decoration: const InputDecoration(labelText: 'Role'),
+                decoration: InputDecoration(
+                  labelText: context.l10n.translate('Role'),
+                ),
                 items: [
                   for (final item in MemberRole.values)
                     DropdownMenuItem(value: item.name, child: Text(item.label)),
@@ -117,11 +123,11 @@ class TeamScreen extends ConsumerWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.translate('Cancel')),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Invite'),
+              child: Text(context.l10n.translate('Invite')),
             ),
           ],
         ),

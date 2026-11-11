@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/domain/order_status.dart';
 import '../../../core/errors/app_exception.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/export/document_pdf.dart';
 import '../../../core/export/export_service.dart';
 import '../../../core/money/money.dart';
@@ -36,7 +37,7 @@ class OrderDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order'),
+        title: Text(context.l10n.translate('Order')),
         actions: [
           detail.maybeWhen(
             data: (data) => Row(
@@ -49,12 +50,17 @@ class OrderDetailScreen extends ConsumerWidget {
                   ),
                 PopupMenuButton<String>(
                   onSelected: (value) => _onMenu(context, ref, value, data),
-                  itemBuilder: (context) => const [
+                  itemBuilder: (context) => [
                     PopupMenuItem(
                       value: 'print',
-                      child: Text('Print / save as PDF'),
+                      child: Text(
+                        context.l10n.translate('Print / save as PDF'),
+                      ),
                     ),
-                    PopupMenuItem(value: 'share', child: Text('Share PDF')),
+                    PopupMenuItem(
+                      value: 'share',
+                      child: Text(context.l10n.translate('Share PDF')),
+                    ),
                   ],
                 ),
               ],
@@ -289,7 +295,7 @@ class OrderDetailScreen extends ConsumerWidget {
                                 onPressed: () =>
                                     _recordPayment(context, ref, financials),
                                 icon: const Icon(Icons.add, size: 18),
-                                label: const Text('Record'),
+                                label: Text(context.l10n.translate('Record')),
                               )
                             : null,
                       ),
@@ -350,14 +356,18 @@ class OrderDetailScreen extends ConsumerWidget {
                                       payment,
                                     ),
                                     itemBuilder: (context) => [
-                                      const PopupMenuItem(
+                                      PopupMenuItem(
                                         value: 'refund',
-                                        child: Text('Refund'),
+                                        child: Text(
+                                          context.l10n.translate('Refund'),
+                                        ),
                                       ),
                                       if (role.canDeleteRecords)
-                                        const PopupMenuItem(
+                                        PopupMenuItem(
                                           value: 'void',
-                                          child: Text('Void'),
+                                          child: Text(
+                                            context.l10n.translate('Void'),
+                                          ),
                                         ),
                                     ],
                                   ),
@@ -401,7 +411,7 @@ class OrderDetailScreen extends ConsumerWidget {
                             ? TextButton.icon(
                                 onPressed: () => _addCost(context, ref),
                                 icon: const Icon(Icons.add, size: 18),
-                                label: const Text('Add'),
+                                label: Text(context.l10n.translate('Add')),
                               )
                             : null,
                       ),
@@ -650,7 +660,7 @@ class OrderDetailScreen extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Refund'),
+        title: Text(context.l10n.translate('Refund')),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -662,11 +672,11 @@ class OrderDetailScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.translate('Cancel')),
           ),
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Refund'),
+            child: Text(context.l10n.translate('Refund')),
           ),
         ],
       ),

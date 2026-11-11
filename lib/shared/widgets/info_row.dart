@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/localization/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 
 /// Label / value row used across the detail screens.
@@ -32,7 +33,7 @@ class InfoRow extends StatelessWidget {
           ],
           Expanded(
             child: Text(
-              label,
+              context.l10n.translate(label),
               style: const TextStyle(
                 color: AppColors.textSecondary,
                 fontSize: 13.5,

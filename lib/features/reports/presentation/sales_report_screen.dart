@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/money/money.dart';
 import '../../../core/money/money_format.dart';
 import '../../../core/theme/app_colors.dart';
@@ -21,7 +22,7 @@ class SalesReportScreen extends ConsumerWidget {
     final report = ref.watch(salesSummaryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Sales report')),
+      appBar: AppBar(title: Text(context.l10n.translate('Sales report'))),
       body: Column(
         children: [
           const PeriodSelectorBar(),

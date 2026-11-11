@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/errors/app_exception.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/money/document_totals.dart';
 import '../../../core/money/money.dart';
 import '../../../core/theme/app_colors.dart';
@@ -174,7 +175,9 @@ class _QuotationFormScreenState extends ConsumerState<QuotationFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.quotationId == null ? 'New quotation' : 'Edit quotation',
+          context.l10n.translate(
+            widget.quotationId == null ? 'New quotation' : 'Edit quotation',
+          ),
         ),
       ),
       body: Form(
@@ -185,7 +188,9 @@ class _QuotationFormScreenState extends ConsumerState<QuotationFormScreen> {
             DropdownButtonFormField<String>(
               initialValue: _customerId,
               isExpanded: true,
-              decoration: const InputDecoration(labelText: 'Customer'),
+              decoration: InputDecoration(
+                labelText: context.l10n.translate('Customer'),
+              ),
               items: [
                 for (final customer in customers)
                   DropdownMenuItem(
@@ -200,7 +205,7 @@ class _QuotationFormScreenState extends ConsumerState<QuotationFormScreen> {
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.event_outlined),
-              title: const Text('Valid until'),
+              title: Text(context.l10n.translate('Valid until')),
               subtitle: Text(
                 _validUntil == null
                     ? 'No expiry date'
@@ -216,7 +221,7 @@ class _QuotationFormScreenState extends ConsumerState<QuotationFormScreen> {
                   );
                   if (picked != null) setState(() => _validUntil = picked);
                 },
-                child: const Text('Pick'),
+                child: Text(context.l10n.translate('Pick')),
               ),
             ),
             const Divider(height: 24),
@@ -256,16 +261,22 @@ class _QuotationFormScreenState extends ConsumerState<QuotationFormScreen> {
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     initialValue: _discountType,
-                    decoration: const InputDecoration(
-                      labelText: 'Discount type',
+                    decoration: InputDecoration(
+                      labelText: context.l10n.translate('Discount type'),
                     ),
-                    items: const [
-                      DropdownMenuItem(value: 'none', child: Text('None')),
+                    items: [
+                      DropdownMenuItem(
+                        value: 'none',
+                        child: Text(context.l10n.translate('None')),
+                      ),
                       DropdownMenuItem(
                         value: 'percent',
-                        child: Text('Percent'),
+                        child: Text(context.l10n.translate('Percent')),
                       ),
-                      DropdownMenuItem(value: 'amount', child: Text('Amount')),
+                      DropdownMenuItem(
+                        value: 'amount',
+                        child: Text(context.l10n.translate('Amount')),
+                      ),
                     ],
                     onChanged: (value) => setState(() {
                       _discountType = value ?? 'none';

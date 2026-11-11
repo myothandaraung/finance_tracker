@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/errors/app_exception.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
 import '../../../shared/widgets/dialogs.dart';
@@ -75,7 +76,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     final membership = ref.watch(activeMembershipProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Account')),
+      appBar: AppBar(title: Text(context.l10n.translate('Account'))),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -103,7 +104,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.business_outlined),
-              title: const Text('Business'),
+              title: Text(context.l10n.translate('Business')),
               subtitle: Text('${membership.name} · ${membership.role.label}'),
             ),
           const SizedBox(height: 18),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/errors/app_exception.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
 import '../../../shared/widgets/dialogs.dart';
@@ -102,7 +103,9 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.customerId == null ? 'New customer' : 'Edit customer',
+          context.l10n.translate(
+            widget.customerId == null ? 'New customer' : 'Edit customer',
+          ),
         ),
       ),
       body: Form(
@@ -153,7 +156,7 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
             ),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
-              title: const Text('Active customer'),
+              title: Text(context.l10n.translate('Active customer')),
               value: _isActive,
               onChanged: (value) => setState(() => _isActive = value),
             ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/localization/app_localizations.dart';
+import '../../../core/localization/locale_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/section_title.dart';
@@ -17,9 +19,11 @@ class MoreScreen extends ConsumerWidget {
     final role = ref.watch(currentRoleProvider);
     final membership = ref.watch(activeMembershipProvider);
     final user = ref.watch(currentUserProvider);
+    final locale = ref.watch(appLocaleProvider);
+    final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('More')),
+      appBar: AppBar(title: Text(l10n.text('more'))),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -39,7 +43,7 @@ class MoreScreen extends ConsumerWidget {
                       Text(
                         (user?.userMetadata?['display_name'] as String?) ??
                             user?.email ??
-                            'Signed in',
+                            l10n.text('signed_in'),
                         style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                       const SizedBox(height: 2),
@@ -67,16 +71,16 @@ class MoreScreen extends ConsumerWidget {
             Card(
               child: Column(
                 children: [
-                  const SectionTitle('Catalog'),
+                  SectionTitle(l10n.text('catalog')),
                   ListTile(
                     leading: const Icon(Icons.inventory_2_outlined),
-                    title: const Text('Products'),
+                    title: Text(l10n.text('products')),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () => context.push('/app/products'),
                   ),
                   ListTile(
                     leading: const Icon(Icons.construction_outlined),
-                    title: const Text('Materials'),
+                    title: Text(l10n.text('materials')),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () => context.push('/app/materials'),
                   ),
@@ -89,23 +93,23 @@ class MoreScreen extends ConsumerWidget {
             Card(
               child: Column(
                 children: [
-                  const SectionTitle('Money'),
+                  SectionTitle(l10n.text('money')),
                   ListTile(
                     leading: const Icon(Icons.payments_outlined),
-                    title: const Text('Cash ledger'),
+                    title: Text(l10n.text('cash_ledger')),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () => context.push('/app/finance/payments'),
                   ),
                   ListTile(
                     leading: const Icon(Icons.receipt_outlined),
-                    title: const Text('Expenses'),
+                    title: Text(l10n.text('expenses')),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () => context.push('/app/finance/expenses'),
                   ),
                   ListTile(
                     leading: const Icon(Icons.insights_outlined),
-                    title: const Text('Reports'),
-                    subtitle: const Text('Sales, profitability, receivables'),
+                    title: Text(l10n.text('reports')),
+                    subtitle: Text(l10n.text('reports_subtitle')),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () => context.push('/app/finance'),
                   ),
@@ -118,18 +122,18 @@ class MoreScreen extends ConsumerWidget {
             Card(
               child: Column(
                 children: [
-                  const SectionTitle('Business'),
+                  SectionTitle(l10n.text('business')),
                   if (role.canManageMembers)
                     ListTile(
                       leading: const Icon(Icons.group_outlined),
-                      title: const Text('Team'),
+                      title: Text(l10n.text('team')),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => context.push('/app/team'),
                     ),
                   if (role.canManageSettings)
                     ListTile(
                       leading: const Icon(Icons.settings_outlined),
-                      title: const Text('Business settings'),
+                      title: Text(l10n.text('business_settings')),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => context.push('/app/settings'),
                     ),
@@ -141,16 +145,35 @@ class MoreScreen extends ConsumerWidget {
           Card(
             child: Column(
               children: [
-                const SectionTitle('Account'),
+                SectionTitle(l10n.text('preferences')),
+                ListTile(
+                  leading: const Icon(Icons.language_outlined),
+                  title: Text(l10n.text('language')),
+                  subtitle: Text(
+                    locale.languageCode == 'my'
+                        ? l10n.text('myanmar')
+                        : l10n.text('english'),
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => _chooseLanguage(context, ref),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Card(
+            child: Column(
+              children: [
+                SectionTitle(l10n.text('account')),
                 ListTile(
                   leading: const Icon(Icons.person_outline),
-                  title: const Text('Profile'),
+                  title: Text(l10n.text('profile')),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => context.push('/app/account'),
                 ),
                 ListTile(
                   leading: const Icon(Icons.logout),
-                  title: const Text('Sign out'),
+                  title: Text(l10n.text('sign_out')),
                   onTap: () => _signOut(context, ref),
                 ),
               ],
@@ -159,6 +182,34 @@ class MoreScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _chooseLanguage(BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
+    final current = ref.read(appLocaleProvider).languageCode;
+    final selected = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => SimpleDialog(
+        title: Text(l10n.text('choose_language')),
+        children: [
+          RadioListTile<String>(
+            value: 'en',
+            groupValue: current,
+            title: Text(l10n.text('english')),
+            onChanged: (value) => Navigator.pop(dialogContext, value),
+          ),
+          RadioListTile<String>(
+            value: 'my',
+            groupValue: current,
+            title: Text(l10n.text('myanmar')),
+            onChanged: (value) => Navigator.pop(dialogContext, value),
+          ),
+        ],
+      ),
+    );
+    if (selected != null) {
+      await ref.read(appLocaleProvider.notifier).select(selected);
+    }
   }
 
   Future<void> _signOut(BuildContext context, WidgetRef ref) async {

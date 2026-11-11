@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/errors/app_exception.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
@@ -21,7 +22,7 @@ class BusinessSelectionScreen extends ConsumerWidget {
     final activeBusinessId = ref.watch(activeBusinessIdProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Your businesses')),
+      appBar: AppBar(title: Text(context.l10n.translate('Your businesses'))),
       body: memberships.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => ErrorView(
@@ -107,7 +108,7 @@ class BusinessSelectionScreen extends ConsumerWidget {
     final created = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('New business'),
+        title: Text(context.l10n.translate('New business')),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -121,11 +122,11 @@ class BusinessSelectionScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.translate('Cancel')),
           ),
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Create'),
+            child: Text(context.l10n.translate('Create')),
           ),
         ],
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/localization/app_localizations.dart';
 import '../../core/money/document_totals.dart';
 import '../../core/money/money.dart';
 import '../../core/money/money_format.dart';
@@ -96,7 +97,7 @@ class LineEditor extends StatelessWidget {
               child: OutlinedButton.icon(
                 onPressed: _add,
                 icon: const Icon(Icons.add, size: 18),
-                label: const Text('Add line'),
+                label: Text(context.l10n.translate('Add line')),
               ),
             ),
             if (products.isNotEmpty) ...[
@@ -128,12 +129,12 @@ class LineEditor extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: AppColors.divider),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.inventory_2_outlined, size: 18),
-                        SizedBox(width: 8),
-                        Text('From catalog'),
+                        const Icon(Icons.inventory_2_outlined, size: 18),
+                        const SizedBox(width: 8),
+                        Text(context.l10n.translate('From catalog')),
                       ],
                     ),
                   ),

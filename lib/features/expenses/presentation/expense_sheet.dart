@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/errors/app_exception.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/money/money.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/date_utils.dart';
@@ -115,7 +116,9 @@ class _ExpenseSheetState extends ConsumerState<ExpenseSheet> {
               DropdownButtonFormField<String>(
                 initialValue: _categoryId,
                 isExpanded: true,
-                decoration: const InputDecoration(labelText: 'Category'),
+                decoration: InputDecoration(
+                  labelText: context.l10n.translate('Category'),
+                ),
                 items: [
                   for (final category in categories)
                     DropdownMenuItem(
@@ -128,7 +131,9 @@ class _ExpenseSheetState extends ConsumerState<ExpenseSheet> {
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
                 initialValue: _method,
-                decoration: const InputDecoration(labelText: 'Method'),
+                decoration: InputDecoration(
+                  labelText: context.l10n.translate('Method'),
+                ),
                 items: [
                   for (final method in _methods)
                     DropdownMenuItem(value: method.$1, child: Text(method.$2)),
@@ -139,7 +144,7 @@ class _ExpenseSheetState extends ConsumerState<ExpenseSheet> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.event_outlined),
-                title: const Text('Date'),
+                title: Text(context.l10n.translate('Date')),
                 subtitle: Text(AppDate.format(_expenseDate)),
                 trailing: TextButton(
                   onPressed: () async {
@@ -153,7 +158,7 @@ class _ExpenseSheetState extends ConsumerState<ExpenseSheet> {
                     );
                     if (picked != null) setState(() => _expenseDate = picked);
                   },
-                  child: const Text('Change'),
+                  child: Text(context.l10n.translate('Change')),
                 ),
               ),
               const SizedBox(height: 6),

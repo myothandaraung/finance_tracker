@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/domain/order_status.dart';
 import '../../../core/money/money_format.dart';
 import '../../../core/theme/app_colors.dart';
@@ -36,7 +37,7 @@ class _OrderListScreenState extends ConsumerState<OrderListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Orders'),
+        title: Text(context.l10n.translate('Orders')),
         actions: [
           if (role.canManageOperations)
             IconButton(
@@ -58,9 +59,11 @@ class _OrderListScreenState extends ConsumerState<OrderListScreen> {
             child: TextField(
               controller: _searchController,
               onChanged: ref.read(orderFilterProvider.notifier).setSearch,
-              decoration: const InputDecoration(
-                hintText: 'Search by number or customer',
-                prefixIcon: Icon(Icons.search),
+              decoration: InputDecoration(
+                hintText: context.l10n.translate(
+                  'Search by number or customer',
+                ),
+                prefixIcon: const Icon(Icons.search),
               ),
             ),
           ),
@@ -104,7 +107,7 @@ class _OrderListScreenState extends ConsumerState<OrderListScreen> {
                         ? FilledButton.icon(
                             onPressed: () => context.push('/app/orders/new'),
                             icon: const Icon(Icons.add),
-                            label: const Text('New order'),
+                            label: Text(context.l10n.translate('New order')),
                           )
                         : null,
                   );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/domain/quotation_status.dart';
 import '../../../core/money/money_format.dart';
 import '../../../core/theme/app_colors.dart';
@@ -37,7 +38,7 @@ class _QuotationListScreenState extends ConsumerState<QuotationListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Quotations'),
+        title: Text(context.l10n.translate('Quotations')),
         actions: [
           if (role.canManageOperations)
             IconButton(
@@ -59,9 +60,11 @@ class _QuotationListScreenState extends ConsumerState<QuotationListScreen> {
             child: TextField(
               controller: _searchController,
               onChanged: ref.read(quotationFilterProvider.notifier).setSearch,
-              decoration: const InputDecoration(
-                hintText: 'Search by number or customer',
-                prefixIcon: Icon(Icons.search),
+              decoration: InputDecoration(
+                hintText: context.l10n.translate(
+                  'Search by number or customer',
+                ),
+                prefixIcon: const Icon(Icons.search),
               ),
             ),
           ),
@@ -108,7 +111,9 @@ class _QuotationListScreenState extends ConsumerState<QuotationListScreen> {
                             onPressed: () =>
                                 context.push('/app/quotations/new'),
                             icon: const Icon(Icons.add),
-                            label: const Text('New quotation'),
+                            label: Text(
+                              context.l10n.translate('New quotation'),
+                            ),
                           )
                         : null,
                   );

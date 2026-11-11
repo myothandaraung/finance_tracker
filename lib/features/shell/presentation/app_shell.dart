@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 
 /// One entry of the bottom navigation bar.
@@ -86,7 +87,7 @@ class AppShell extends StatelessWidget {
               NavigationDestination(
                 icon: Icon(destination.icon),
                 selectedIcon: Icon(destination.selectedIcon),
-                label: destination.label,
+                label: context.l10n.text(destination.label.toLowerCase()),
               ),
           ],
         ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/localization/app_localizations.dart';
+
 /// Primary action button with an inline loading state.
 class AppButton extends StatelessWidget {
   const AppButton({
@@ -37,23 +39,23 @@ class AppButton extends StatelessWidget {
                 Icon(icon, size: 18),
                 const SizedBox(width: 8),
               ],
-              Text(label),
+              Text(context.l10n.translate(label)),
             ],
           );
 
     final child = switch (style) {
       AppButtonStyle.filled => FilledButton(
-          onPressed: enabled ? onPressed : null,
-          child: content,
-        ),
+        onPressed: enabled ? onPressed : null,
+        child: content,
+      ),
       AppButtonStyle.outlined => OutlinedButton(
-          onPressed: enabled ? onPressed : null,
-          child: content,
-        ),
+        onPressed: enabled ? onPressed : null,
+        child: content,
+      ),
       AppButtonStyle.text => TextButton(
-          onPressed: enabled ? onPressed : null,
-          child: content,
-        ),
+        onPressed: enabled ? onPressed : null,
+        child: content,
+      ),
     };
 
     if (!expand) return child;

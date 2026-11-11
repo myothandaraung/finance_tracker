@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/errors/app_exception.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
 import '../../../shared/widgets/dialogs.dart';
@@ -71,7 +72,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create account')),
+      appBar: AppBar(title: Text(context.l10n.translate('Create account'))),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -147,10 +148,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('Already registered?'),
+                        Text(context.l10n.translate('Already registered?')),
                         TextButton(
                           onPressed: () => context.go('/sign-in'),
-                          child: const Text('Sign in'),
+                          child: Text(context.l10n.translate('Sign in')),
                         ),
                       ],
                     ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/errors/app_exception.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/money/money.dart';
 import '../../../core/money/money_format.dart';
 import '../../../core/theme/app_colors.dart';
@@ -24,7 +25,7 @@ class ExpensesScreen extends ConsumerWidget {
     final role = ref.watch(currentRoleProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Expenses')),
+      appBar: AppBar(title: Text(context.l10n.translate('Expenses'))),
       floatingActionButton: role.canManageFinance
           ? FloatingActionButton(
               onPressed: () => _addExpense(context, ref),
@@ -47,7 +48,7 @@ class ExpensesScreen extends ConsumerWidget {
                   ? FilledButton.icon(
                       onPressed: () => _addExpense(context, ref),
                       icon: const Icon(Icons.add),
-                      label: const Text('Record expense'),
+                      label: Text(context.l10n.translate('Record expense')),
                     )
                   : null,
             );

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/errors/app_exception.dart';
 import '../../../core/export/csv_exporter.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/export/export_service.dart';
 import '../../../core/money/money.dart';
 import '../../../core/money/money_format.dart';
@@ -25,7 +26,7 @@ class ReceivablesReportScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Receivables'),
+        title: Text(context.l10n.translate('Receivables')),
         actions: [
           report.maybeWhen(
             data: (data) => data.rows.isEmpty

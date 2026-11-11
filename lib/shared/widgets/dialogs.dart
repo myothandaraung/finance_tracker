@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/localization/app_localizations.dart';
+
 /// Confirmation dialog used before destructive or financial actions.
 Future<bool> showConfirmDialog(
   BuildContext context, {
@@ -12,12 +14,12 @@ Future<bool> showConfirmDialog(
   final result = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text(title),
-      content: Text(message),
+      title: Text(context.l10n.translate(title)),
+      content: Text(context.l10n.translate(message)),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: Text(cancelLabel),
+          child: Text(context.l10n.translate(cancelLabel)),
         ),
         FilledButton(
           style: isDestructive
@@ -26,7 +28,7 @@ Future<bool> showConfirmDialog(
                 )
               : null,
           onPressed: () => Navigator.of(context).pop(true),
-          child: Text(confirmLabel),
+          child: Text(context.l10n.translate(confirmLabel)),
         ),
       ],
     ),
@@ -45,10 +47,9 @@ void showAppSnackBar(
     ..hideCurrentSnackBar()
     ..showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: Text(context.l10n.translate(message)),
         action: action,
-        backgroundColor:
-            isError ? Theme.of(context).colorScheme.error : null,
+        backgroundColor: isError ? Theme.of(context).colorScheme.error : null,
         behavior: SnackBarBehavior.floating,
       ),
     );

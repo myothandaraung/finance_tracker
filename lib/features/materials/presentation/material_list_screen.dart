@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/errors/app_exception.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/money/money.dart';
 import '../../../core/money/money_format.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -22,7 +23,7 @@ class MaterialListScreen extends ConsumerWidget {
     final role = ref.watch(currentRoleProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Materials')),
+      appBar: AppBar(title: Text(context.l10n.translate('Materials'))),
       floatingActionButton: role.canManageOperations
           ? FloatingActionButton(
               onPressed: () => _openForm(context, ref, null),
@@ -46,7 +47,7 @@ class MaterialListScreen extends ConsumerWidget {
                   ? FilledButton.icon(
                       onPressed: () => _openForm(context, ref, null),
                       icon: const Icon(Icons.add),
-                      label: const Text('Add material'),
+                      label: Text(context.l10n.translate('Add material')),
                     )
                   : null,
             );
@@ -186,7 +187,9 @@ class _MaterialFormState extends ConsumerState<_MaterialForm> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                widget.material == null ? 'New material' : 'Edit material',
+                context.l10n.translate(
+                  widget.material == null ? 'New material' : 'Edit material',
+                ),
                 style: const TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w700,
@@ -213,7 +216,7 @@ class _MaterialFormState extends ConsumerState<_MaterialForm> {
               ),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Active'),
+                title: Text(context.l10n.translate('Active')),
                 value: _isActive,
                 onChanged: (value) => setState(() => _isActive = value),
               ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/localization/app_localizations.dart';
 import '../../core/money/money.dart';
 import '../../features/business/providers/business_providers.dart';
 
@@ -58,18 +59,23 @@ class AppTextField extends StatelessWidget {
       maxLines: maxLines,
       autofocus: autofocus,
       onChanged: onChanged,
-      validator: validator,
+      validator: (value) {
+        final result = validator?.call(value);
+        return result == null ? null : context.l10n.translate(result);
+      },
       onFieldSubmitted: onSubmitted,
       inputFormatters: inputFormatters,
       obscureText: obscureText,
       autofillHints: autofillHints,
       decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
+        labelText: context.l10n.translate(label),
+        hintText: hint == null ? null : context.l10n.translate(hint!),
         prefixText: prefixText,
         suffixText: suffixText,
         suffixIcon: suffixIcon,
-        helperText: helperText,
+        helperText: helperText == null
+            ? null
+            : context.l10n.translate(helperText!),
       ),
     );
   }
@@ -110,7 +116,7 @@ class AmountField extends ConsumerWidget {
       onChanged: (value) => onChanged?.call(Money.tryParse(value)),
       validator: (value) {
         final base = validator?.call(value);
-        if (base != null) return base;
+        if (base != null) return context.l10n.translate(base);
         if (value == null || value.trim().isEmpty) return 'Enter an amount';
         if (Money.tryParse(value) == null) {
           return 'Enter a valid amount (max 2 decimals)';
@@ -118,8 +124,8 @@ class AmountField extends ConsumerWidget {
         return null;
       },
       decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
+        labelText: context.l10n.translate(label),
+        hintText: hint == null ? null : context.l10n.translate(hint!),
         prefixText: '$symbol ',
       ),
     );
@@ -149,12 +155,12 @@ class QuantityField extends StatelessWidget {
       onChanged: (value) => onChanged?.call(double.tryParse(value) ?? 0),
       validator: (value) {
         final base = validator?.call(value);
-        if (base != null) return base;
+        if (base != null) return context.l10n.translate(base);
         final parsed = double.tryParse(value ?? '');
         if (parsed == null || parsed <= 0) return 'Enter a quantity above 0';
         return null;
       },
-      decoration: InputDecoration(labelText: label),
+      decoration: InputDecoration(labelText: context.l10n.translate(label)),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/money/money_format.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/date_utils.dart';
@@ -36,7 +37,7 @@ class CustomerDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Customer'),
+        title: Text(context.l10n.translate('Customer')),
         actions: [
           if (role.canManageOperations)
             IconButton(
@@ -53,7 +54,9 @@ class CustomerDetailScreen extends ConsumerWidget {
         ),
         data: (data) {
           if (data == null) {
-            return const Center(child: Text('Customer not found'));
+            return Center(
+              child: Text(context.l10n.translate('Customer not found')),
+            );
           }
 
           return ListView(

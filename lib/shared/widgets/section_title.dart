@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/localization/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 
 /// Section heading used inside cards and detail screens.
@@ -29,7 +30,7 @@ class SectionTitle extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  context.l10n.translate(title),
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
@@ -39,7 +40,7 @@ class SectionTitle extends StatelessWidget {
                 if (subtitle != null) ...[
                   const SizedBox(height: 2),
                   Text(
-                    subtitle!,
+                    context.l10n.translate(subtitle!),
                     style: const TextStyle(
                       fontSize: 12.5,
                       color: AppColors.textSecondary,

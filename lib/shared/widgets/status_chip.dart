@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/domain/order_status.dart';
 import '../../core/domain/quotation_status.dart';
+import '../../core/localization/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 
 /// Small coloured pill used for order and quotation statuses.
@@ -33,7 +34,7 @@ class StatusChip extends StatelessWidget {
         border: Border.all(color: color.withValues(alpha: 0.35)),
       ),
       child: Text(
-        label,
+        context.l10n.translate(label),
         style: TextStyle(
           color: color,
           fontSize: dense ? 11 : 12,
@@ -75,11 +76,7 @@ class MoneyText extends StatelessWidget {
 
     return Text(
       text,
-      style: textStyle ??
-          TextStyle(
-            color: color,
-            fontWeight: FontWeight.w600,
-          ),
+      style: textStyle ?? TextStyle(color: color, fontWeight: FontWeight.w600),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/errors/app_exception.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/money/money.dart';
 import '../../../core/money/money_format.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -22,7 +23,7 @@ class ProductListScreen extends ConsumerWidget {
     final role = ref.watch(currentRoleProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Products')),
+      appBar: AppBar(title: Text(context.l10n.translate('Products'))),
       floatingActionButton: role.canManageOperations
           ? FloatingActionButton(
               onPressed: () => _openForm(context, ref, null),
@@ -45,7 +46,7 @@ class ProductListScreen extends ConsumerWidget {
                   ? FilledButton.icon(
                       onPressed: () => _openForm(context, ref, null),
                       icon: const Icon(Icons.add),
-                      label: const Text('Add product'),
+                      label: Text(context.l10n.translate('Add product')),
                     )
                   : null,
             );
@@ -199,7 +200,9 @@ class _ProductFormState extends ConsumerState<_ProductForm> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                widget.product == null ? 'New product' : 'Edit product',
+                context.l10n.translate(
+                  widget.product == null ? 'New product' : 'Edit product',
+                ),
                 style: const TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w700,
@@ -235,7 +238,7 @@ class _ProductFormState extends ConsumerState<_ProductForm> {
               ),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Active'),
+                title: Text(context.l10n.translate('Active')),
                 value: _isActive,
                 onChanged: (value) => setState(() => _isActive = value),
               ),

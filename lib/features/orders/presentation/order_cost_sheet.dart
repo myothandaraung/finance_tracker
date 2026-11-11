@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/errors/app_exception.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/money/money.dart';
 import '../../../core/utils/date_utils.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -104,7 +105,9 @@ class _OrderCostSheetState extends ConsumerState<OrderCostSheet> {
               const SizedBox(height: 18),
               DropdownButtonFormField<String>(
                 initialValue: _costType,
-                decoration: const InputDecoration(labelText: 'Cost type'),
+                decoration: InputDecoration(
+                  labelText: context.l10n.translate('Cost type'),
+                ),
                 items: [
                   for (final type in _types)
                     DropdownMenuItem(value: type.$1, child: Text(type.$2)),
@@ -119,7 +122,9 @@ class _OrderCostSheetState extends ConsumerState<OrderCostSheet> {
                 DropdownButtonFormField<String>(
                   initialValue: _materialId,
                   isExpanded: true,
-                  decoration: const InputDecoration(labelText: 'Material'),
+                  decoration: InputDecoration(
+                    labelText: context.l10n.translate('Material'),
+                  ),
                   items: [
                     for (final material in materials)
                       DropdownMenuItem(
@@ -171,7 +176,7 @@ class _OrderCostSheetState extends ConsumerState<OrderCostSheet> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.event_outlined),
-                title: const Text('Cost date'),
+                title: Text(context.l10n.translate('Cost date')),
                 subtitle: Text(AppDate.format(_costDate)),
                 trailing: TextButton(
                   onPressed: () async {
@@ -185,7 +190,7 @@ class _OrderCostSheetState extends ConsumerState<OrderCostSheet> {
                     );
                     if (picked != null) setState(() => _costDate = picked);
                   },
-                  child: const Text('Change'),
+                  child: Text(context.l10n.translate('Change')),
                 ),
               ),
               const SizedBox(height: 16),

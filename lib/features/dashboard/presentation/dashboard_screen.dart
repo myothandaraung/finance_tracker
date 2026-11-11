@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/money/money.dart';
 import '../../../core/money/money_format.dart';
 import '../../../core/theme/app_colors.dart';
@@ -26,7 +27,7 @@ class DashboardScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(membership?.name ?? 'Dashboard'),
+        title: Text(membership?.name ?? context.l10n.translate('Dashboard')),
         actions: [
           if (membership != null)
             Padding(
@@ -48,7 +49,7 @@ class DashboardScreen extends ConsumerWidget {
           ? FloatingActionButton.extended(
               onPressed: () => _showQuickActions(context),
               icon: const Icon(Icons.add),
-              label: const Text('New'),
+              label: Text(context.l10n.translate('New')),
             )
           : null,
       body: RefreshIndicator(
@@ -98,7 +99,7 @@ class DashboardScreen extends ConsumerWidget {
           children: [
             ListTile(
               leading: const Icon(Icons.request_quote_outlined),
-              title: const Text('New quotation'),
+              title: Text(context.l10n.translate('New quotation')),
               onTap: () {
                 Navigator.of(sheetContext).pop();
                 context.go('/app/quotations/new');
@@ -106,7 +107,7 @@ class DashboardScreen extends ConsumerWidget {
             ),
             ListTile(
               leading: const Icon(Icons.receipt_long_outlined),
-              title: const Text('New order'),
+              title: Text(context.l10n.translate('New order')),
               onTap: () {
                 Navigator.of(sheetContext).pop();
                 context.go('/app/orders/new');
@@ -114,7 +115,7 @@ class DashboardScreen extends ConsumerWidget {
             ),
             ListTile(
               leading: const Icon(Icons.people_outline),
-              title: const Text('New customer'),
+              title: Text(context.l10n.translate('New customer')),
               onTap: () {
                 Navigator.of(sheetContext).pop();
                 context.go('/app/customers/new');

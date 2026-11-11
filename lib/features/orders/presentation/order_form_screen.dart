@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/errors/app_exception.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/money/document_totals.dart';
 import '../../../core/money/money.dart';
 import '../../../core/utils/date_utils.dart';
@@ -174,7 +175,11 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.orderId == null ? 'New order' : 'Edit order'),
+        title: Text(
+          context.l10n.translate(
+            widget.orderId == null ? 'New order' : 'Edit order',
+          ),
+        ),
       ),
       body: Form(
         key: _formKey,
@@ -184,7 +189,9 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
             DropdownButtonFormField<String>(
               initialValue: _customerId,
               isExpanded: true,
-              decoration: const InputDecoration(labelText: 'Customer'),
+              decoration: InputDecoration(
+                labelText: context.l10n.translate('Customer'),
+              ),
               items: [
                 for (final customer in customers)
                   DropdownMenuItem(
@@ -199,9 +206,14 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
             DropdownButtonFormField<String>(
               initialValue: _assignedTo ?? '',
               isExpanded: true,
-              decoration: const InputDecoration(labelText: 'Assigned to'),
+              decoration: InputDecoration(
+                labelText: context.l10n.translate('Assigned to'),
+              ),
               items: [
-                const DropdownMenuItem(value: '', child: Text('Nobody')),
+                DropdownMenuItem(
+                  value: '',
+                  child: Text(context.l10n.translate('Nobody')),
+                ),
                 for (final member in members)
                   DropdownMenuItem(
                     value: member.userId,
@@ -218,7 +230,7 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.event_outlined),
-              title: const Text('Due date'),
+              title: Text(context.l10n.translate('Due date')),
               subtitle: Text(
                 _dueDate == null ? 'No due date' : AppDate.format(_dueDate),
               ),
@@ -232,7 +244,7 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                   );
                   if (picked != null) setState(() => _dueDate = picked);
                 },
-                child: const Text('Pick'),
+                child: Text(context.l10n.translate('Pick')),
               ),
             ),
             const Divider(height: 24),
@@ -260,16 +272,22 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     initialValue: _discountType,
-                    decoration: const InputDecoration(
-                      labelText: 'Discount type',
+                    decoration: InputDecoration(
+                      labelText: context.l10n.translate('Discount type'),
                     ),
-                    items: const [
-                      DropdownMenuItem(value: 'none', child: Text('None')),
+                    items: [
+                      DropdownMenuItem(
+                        value: 'none',
+                        child: Text(context.l10n.translate('None')),
+                      ),
                       DropdownMenuItem(
                         value: 'percent',
-                        child: Text('Percent'),
+                        child: Text(context.l10n.translate('Percent')),
                       ),
-                      DropdownMenuItem(value: 'amount', child: Text('Amount')),
+                      DropdownMenuItem(
+                        value: 'amount',
+                        child: Text(context.l10n.translate('Amount')),
+                      ),
                     ],
                     onChanged: (value) => setState(() {
                       _discountType = value ?? 'none';

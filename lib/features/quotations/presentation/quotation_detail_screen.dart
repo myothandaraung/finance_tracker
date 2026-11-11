@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/domain/quotation_status.dart';
 import '../../../core/errors/app_exception.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/export/document_pdf.dart';
 import '../../../core/export/export_service.dart';
 import '../../../core/money/money_format.dart';
@@ -31,7 +32,7 @@ class QuotationDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Quotation'),
+        title: Text(context.l10n.translate('Quotation')),
         actions: [
           quotation.maybeWhen(
             data: (data) => Row(
@@ -44,12 +45,17 @@ class QuotationDetailScreen extends ConsumerWidget {
                   ),
                 PopupMenuButton<String>(
                   onSelected: (value) => _onMenu(context, ref, value, data),
-                  itemBuilder: (context) => const [
+                  itemBuilder: (context) => [
                     PopupMenuItem(
                       value: 'print',
-                      child: Text('Print / save as PDF'),
+                      child: Text(
+                        context.l10n.translate('Print / save as PDF'),
+                      ),
                     ),
-                    PopupMenuItem(value: 'share', child: Text('Share PDF')),
+                    PopupMenuItem(
+                      value: 'share',
+                      child: Text(context.l10n.translate('Share PDF')),
+                    ),
                   ],
                 ),
               ],

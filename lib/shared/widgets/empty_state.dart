@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/localization/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 
 /// Placeholder shown when a list has no records yet.
@@ -35,7 +36,7 @@ class EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              title,
+              context.l10n.translate(title),
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 16,
@@ -46,15 +47,12 @@ class EmptyState extends StatelessWidget {
             if (message != null) ...[
               const SizedBox(height: 6),
               Text(
-                message!,
+                context.l10n.translate(message!),
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: AppColors.textSecondary),
               ),
             ],
-            if (action != null) ...[
-              const SizedBox(height: 18),
-              action!,
-            ],
+            if (action != null) ...[const SizedBox(height: 18), action!],
           ],
         ),
       ),

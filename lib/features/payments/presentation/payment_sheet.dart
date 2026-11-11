@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/errors/app_exception.dart';
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/money/money.dart';
 import '../../../core/money/money_format.dart';
 import '../../../core/supabase/supabase_client.dart';
@@ -202,7 +203,9 @@ class _PaymentSheetState extends ConsumerState<PaymentSheet> {
               const SizedBox(height: 18),
               DropdownButtonFormField<String>(
                 initialValue: _kind,
-                decoration: const InputDecoration(labelText: 'Payment type'),
+                decoration: InputDecoration(
+                  labelText: context.l10n.translate('Payment type'),
+                ),
                 items: [
                   for (final kind in _kinds)
                     DropdownMenuItem(value: kind.$1, child: Text(kind.$2)),
@@ -220,12 +223,17 @@ class _PaymentSheetState extends ConsumerState<PaymentSheet> {
               DropdownButtonFormField<String>(
                 initialValue: _method,
                 isExpanded: true,
-                decoration: const InputDecoration(labelText: 'Method'),
+                decoration: InputDecoration(
+                  labelText: context.l10n.translate('Method'),
+                ),
                 items: [
-                  const DropdownMenuItem(value: 'cash', child: Text('Cash')),
-                  const DropdownMenuItem(
+                  DropdownMenuItem(
+                    value: 'cash',
+                    child: Text(context.l10n.translate('Cash')),
+                  ),
+                  DropdownMenuItem(
                     value: 'bank',
-                    child: Text('Bank transfer'),
+                    child: Text(context.l10n.translate('Bank transfer')),
                   ),
                   for (final method in methods)
                     DropdownMenuItem(
@@ -239,7 +247,7 @@ class _PaymentSheetState extends ConsumerState<PaymentSheet> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.event_outlined),
-                title: const Text('Paid on'),
+                title: Text(context.l10n.translate('Paid on')),
                 subtitle: Text(AppDate.formatDateTime(_paidAt)),
                 trailing: TextButton(
                   onPressed: () async {
@@ -267,7 +275,7 @@ class _PaymentSheetState extends ConsumerState<PaymentSheet> {
                       );
                     });
                   },
-                  child: const Text('Change'),
+                  child: Text(context.l10n.translate('Change')),
                 ),
               ),
               const SizedBox(height: 8),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/localization/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/error_view.dart';
@@ -41,7 +42,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
         const [];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Customers')),
+      appBar: AppBar(title: Text(context.l10n.translate('Customers'))),
       floatingActionButton: role.canManageOperations
           ? FloatingActionButton(
               onPressed: () => context.push('/app/customers/new'),
@@ -56,7 +57,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
               controller: _searchController,
               onChanged: (value) => setState(() => _search = value),
               decoration: InputDecoration(
-                hintText: 'Search customers',
+                hintText: context.l10n.translate('Search customers'),
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon: _search.isEmpty
                     ? null
@@ -91,7 +92,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                         ? FilledButton.icon(
                             onPressed: () => context.push('/app/customers/new'),
                             icon: const Icon(Icons.person_add_alt),
-                            label: const Text('Add customer'),
+                            label: Text(context.l10n.translate('Add customer')),
                           )
                         : null,
                   );

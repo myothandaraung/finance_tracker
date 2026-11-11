@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/localization/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 
 /// Dashboard / report KPI card.
@@ -52,7 +53,7 @@ class MetricCard extends StatelessWidget {
                 ],
                 Expanded(
                   child: Text(
-                    label,
+                    context.l10n.translate(label),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -78,7 +79,7 @@ class MetricCard extends StatelessWidget {
             if (hint != null) ...[
               const SizedBox(height: 3),
               Text(
-                hint!,
+                context.l10n.translate(hint!),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
