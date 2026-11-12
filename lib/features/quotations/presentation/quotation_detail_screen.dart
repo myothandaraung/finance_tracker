@@ -17,6 +17,7 @@ import '../../../shared/widgets/info_row.dart';
 import '../../../shared/widgets/section_title.dart';
 import '../../../shared/widgets/status_chip.dart';
 import '../../business/providers/business_providers.dart';
+import '../../orders/providers/order_providers.dart';
 import '../domain/quotation.dart';
 import '../providers/quotation_providers.dart';
 
@@ -231,6 +232,27 @@ class QuotationDetailScreen extends ConsumerWidget {
     QuotationStatus status,
   ) async {
     try {
+      if (status == QuotationStatus.converted) {
+        final order = await ref
+            .read(orderRepositoryProvider)
+            .convertQuotation(quotationId: quotationId);
+        final orderId = order['id'] as String?;
+
+        ref.invalidate(quotationDetailProvider(quotationId));
+        ref.invalidate(quotationsProvider);
+        ref.invalidate(ordersProvider);
+
+        if (!context.mounted) return;
+        if (orderId == null || orderId.isEmpty) {
+          throw const AppException(
+            'The order was created but its ID was not returned.',
+          );
+        }
+        showAppSnackBar(context, 'Quotation converted to order');
+        context.go('/app/orders/$orderId');
+        return;
+      }
+
       await ref
           .read(quotationRepositoryProvider)
           .setStatus(quotationId: quotationId, status: status.dbValue);
